@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CliHelper.cs" />
+    <Compile Include="LoginHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -50,9 +53,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PowerPlant.Domain\PowerPlant.Domain.csproj">
+    <ProjectReference Include="..\PowerPlant.Domain\PowerPlantCzarnobyl.Domain.csproj">
       <Project>{cccd3b95-2096-42c2-ac70-a209af123041}</Project>
-      <Name>PowerPlant.Domain</Name>
+      <Name>PowerPlantCzarnobyl.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PowerPlant.Infrastructure\PowerPlantCzarnobyl.Infrastructure.csproj">
+      <Project>{eb96c09a-9c31-4955-8d24-1abe9243e4b4}</Project>
+      <Name>PowerPlantCzarnobyl.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
