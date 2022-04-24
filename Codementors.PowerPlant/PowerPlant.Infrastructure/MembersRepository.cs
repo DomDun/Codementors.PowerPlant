@@ -7,13 +7,11 @@ using System.Data.SqlClient;
 
 namespace PowerPlantCzarnobyl.Infrastructure
 {
-   
-
     public class MembersRepository : IMembersRepository
     {
-        private string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantConnectionString"].ConnectionString;
+        private string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantDBConnectionString"].ConnectionString;
 
-        public bool AddUser(Member user)
+        public bool AddMember(Member member)
         {
             try
             {
@@ -21,12 +19,12 @@ namespace PowerPlantCzarnobyl.Infrastructure
                 {
                     connection.Open();
 
-                    string commandSql = "INSERT INTO [Users] ([Login], [Password], [Role]) " +
+                    string commandSql = "INSERT INTO [Members] ([Login], [Password], [Role]) " +
                         "VALUES (@Login, @Password, @Role)";
                     SqlCommand command = new SqlCommand(commandSql, connection);
-                    command.Parameters.Add("@Login", SqlDbType.NVarChar, 255).Value = user.Login;
-                    command.Parameters.Add("@Password", SqlDbType.NVarChar, 255).Value = user.Password;
-                    command.Parameters.Add("@Role", SqlDbType.NVarChar, 255).Value = user.Role;
+                    command.Parameters.Add("@Login", SqlDbType.NVarChar, 255).Value = member.Login;
+                    command.Parameters.Add("@Password", SqlDbType.NVarChar, 255).Value = member.Password;
+                    command.Parameters.Add("@Role", SqlDbType.NVarChar, 255).Value = member.Role;
 
                     if (command.ExecuteNonQuery() == 1)
                     {
@@ -37,15 +35,14 @@ namespace PowerPlantCzarnobyl.Infrastructure
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-
             }
 
             return false;
         }
 
-        public Member GetUser(string username)
+        public Member GetMember(string login)
         {
-            Member user = null;
+            Member member = null;
 
             try
             {
@@ -53,18 +50,18 @@ namespace PowerPlantCzarnobyl.Infrastructure
                 {
                     connection.Open();
 
-                    string commandText = $"SELECT * FROM [Users] WHERE [UserName] = @UserName";
+                    string commandText = $"SELECT * FROM [Members] WHERE [Login] = @Login";
 
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    command.Parameters.Add("@UserName", SqlDbType.NVarChar, 255).Value = username;
+                    command.Parameters.Add("@Login", SqlDbType.NVarChar, 255).Value = login;
 
                     SqlDataReader dataReader = command.ExecuteReader();
 
                     dataReader.Read();
 
-                    user = new Member
+                    member = new Member
                     {
-                        Login = dataReader["UserName"].ToString(),
+                        Login = dataReader["Login"].ToString(),
                         Password = dataReader["Password"].ToString(),
                         Role = dataReader["Role"].ToString(),
                     };
@@ -75,10 +72,38 @@ namespace PowerPlantCzarnobyl.Infrastructure
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                user = null;
+                member = null;
             }
 
-            return user;
+            return member;
+        }
+
+        public bool DeleteMember(string login)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = $"DELETE FROM [Members] WHERE [Login] = '{login}'";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    success = rowsAffected == 1;
+
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                success = false;
+            }
+
+            return success;
         }
     }
 }

@@ -7,3 +7,6 @@ CREATE TABLE [Members] (
 	[Password] VARCHAR(255) NOT NULL,
 	[Role] VARCHAR(255) NOT NULL,
 )
+
+INSERT INTO [Members] ([Login], [Password], [Role]) VALUES
+('admin', 'admin', 'Admin');
