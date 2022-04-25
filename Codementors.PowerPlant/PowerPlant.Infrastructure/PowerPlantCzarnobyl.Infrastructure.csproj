@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorsRepository.cs" />
+    <Compile Include="LibraryRepository.cs" />
     <Compile Include="MembersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,10 +56,9 @@
       <Name>PowerPlantCzarnobyl.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="3rdParty\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="bin\Debug\PowerPlantDataProvider.dll" />
     <Content Include="Sql\01.CreateDatabase.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

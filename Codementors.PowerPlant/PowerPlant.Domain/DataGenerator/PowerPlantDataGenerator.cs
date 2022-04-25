@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 
-namespace PowerPlantCzarnobyl.Domain.DataGenerator
+namespace PowerPlantDataProvider.DataGenerator
 {
     internal static class PowerPlantDataGenerator
     {

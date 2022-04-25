@@ -1,11 +1,7 @@
 ﻿using PowerPlantCzarnobyl.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace PowerPlantCzarnobyl.Domain
@@ -22,7 +18,7 @@ namespace PowerPlantCzarnobyl.Domain
 
         public event EventHandler<PowerPlantDataSet> OnNewDataSetArrival = null;
 
-        public static PowerPlant Instance = new PowerPlant("PowerPlant 1");
+        public static PowerPlant Instance = new PowerPlant("PowerPlant 1: Czarnobyl");
 
         internal PowerPlant(string name)
         {

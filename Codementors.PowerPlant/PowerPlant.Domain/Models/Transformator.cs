@@ -1,4 +1,4 @@
-﻿using PowerPlantCzarnobyl.Domain.DataGenerator;
+﻿using PowerPlantDataProvider.DataGenerator;
 using System;
 
 namespace PowerPlantCzarnobyl.Domain.Models

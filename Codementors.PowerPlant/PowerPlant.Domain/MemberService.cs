@@ -5,23 +5,35 @@ namespace PowerPlantCzarnobyl.Domain
 {
     public class MemberService
     {
-        private IMembersRepository _usersRepository;
+        private readonly IMembersRepository _membersRepository;
 
-        public MemberService(IMembersRepository usersRepository)
+        public MemberService(IMembersRepository membersRepository)
         {
-            _usersRepository = usersRepository;
+            _membersRepository = membersRepository;
         }
 
-        public bool Add(Member user)
+        public bool Add(Member member)
         {
-            return _usersRepository.AddUser(user);
+            return _membersRepository.AddMember(member);
         }
 
-        public bool CheckUserCredentials(string username, string password)
+        public bool CheckUserCredentials(string login, string password)
         {
-            Member user = _usersRepository.GetUser(username);
+            Member member = _membersRepository.GetMember(login);
 
-            return user != null && user.Password == password;
+            return member != null && member.Password == password;
+        }
+
+        public Member CheckMemberRole(string login)
+        {
+            Member member = _membersRepository.GetMember(login);
+            return member;
+        }
+
+        public bool Delete(string login)
+        {
+            bool result = _membersRepository.DeleteMember(login);
+            return result;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
 {
     public class MembersRepository : IMembersRepository
     {
-        private string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantDBConnectionString"].ConnectionString;
+        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantDBConnectionString"].ConnectionString;
 
         public bool AddMember(Member member)
         {

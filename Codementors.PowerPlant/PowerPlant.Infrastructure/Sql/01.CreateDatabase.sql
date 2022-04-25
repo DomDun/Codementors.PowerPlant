@@ -10,3 +10,12 @@ CREATE TABLE [Members] (
 
 INSERT INTO [Members] ([Login], [Password], [Role]) VALUES
 ('admin', 'admin', 'Admin');
+
+CREATE TABLE [Errors] (	
+	[Id] INT IDENTITY(1,1) PRIMARY KEY,
+	[PlantName] VARCHAR(255) NOT NULL,
+	[MachineName] VARCHAR(255) NOT NULL,
+	[MachineValue] FLOAT (8),
+	[Unit] VARCHAR(255) NOT NULL,
+	[Date] DateTime2,
+)

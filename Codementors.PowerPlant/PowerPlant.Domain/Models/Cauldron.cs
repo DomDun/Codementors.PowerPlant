@@ -1,4 +1,4 @@
-﻿using PowerPlantCzarnobyl.Domain.DataGenerator;
+﻿using PowerPlantDataProvider.DataGenerator;
 using System;
 
 namespace PowerPlantCzarnobyl.Domain.Models
@@ -6,7 +6,7 @@ namespace PowerPlantCzarnobyl.Domain.Models
     [Serializable]
     public class Cauldron
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Water preasure in MegaPascals

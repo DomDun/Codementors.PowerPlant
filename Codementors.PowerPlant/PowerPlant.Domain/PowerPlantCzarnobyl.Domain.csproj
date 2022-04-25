@@ -7,8 +7,8 @@
     <ProjectGuid>{CCCD3B95-2096-42C2-AC70-A209AF123041}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PowerPlant.Domain</RootNamespace>
-    <AssemblyName>PowerPlant.Domain</AssemblyName>
+    <RootNamespace>PowerPlantCzarnobyl.Domain</RootNamespace>
+    <AssemblyName>PowerPlantCzarnobyl.Domain</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -42,14 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataGenerator\PowerPlantDataGenerator.cs" />
-    <Compile Include="Interfaces\IUsersInterface.cs" />
+    <Compile Include="ErrorService.cs" />
+    <Compile Include="Interfaces\IMembersRepository.cs" />
+    <Compile Include="Interfaces\IErrorsRepository.cs" />
     <Compile Include="Models\AssetParameter.cs" />
     <Compile Include="Models\Cauldron.cs" />
+    <Compile Include="Models\Error.cs" />
     <Compile Include="Models\PowerPlantDataSet.cs" />
+    <Compile Include="Models\ProducedPower.cs" />
     <Compile Include="Models\Transformator.cs" />
     <Compile Include="Models\Turbine.cs" />
     <Compile Include="Models\Member.cs" />
-    <Compile Include="PowerPlant.cs" />
+    <Compile Include="..\..\..\powerplant kopia\PowerPlant.cs">
+      <Link>PowerPlant.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MemberService.cs" />
   </ItemGroup>
