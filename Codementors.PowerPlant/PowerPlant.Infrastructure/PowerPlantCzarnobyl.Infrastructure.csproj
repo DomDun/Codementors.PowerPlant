@@ -49,6 +49,7 @@
     <Compile Include="LibraryRepository.cs" />
     <Compile Include="MembersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Sql\02.UpdateDatabase HW5.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPlant.Domain\PowerPlantCzarnobyl.Domain.csproj">

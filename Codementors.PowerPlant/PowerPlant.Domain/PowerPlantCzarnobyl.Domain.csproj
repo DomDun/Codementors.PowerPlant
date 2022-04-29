@@ -41,17 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataGenerator\PowerPlantDataGenerator.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="Interfaces\IMembersRepository.cs" />
     <Compile Include="Interfaces\IErrorsRepository.cs" />
-    <Compile Include="Models\AssetParameter.cs" />
-    <Compile Include="Models\Cauldron.cs" />
+    <Compile Include="Models\AssetParameterData.cs" />
+    <Compile Include="Models\CauldronData.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\PowerPlantDataSet.cs" />
     <Compile Include="Models\ProducedPower.cs" />
-    <Compile Include="Models\Transformator.cs" />
-    <Compile Include="Models\Turbine.cs" />
+    <Compile Include="Models\TransformatorData.cs" />
+    <Compile Include="Models\TurbineData.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="..\..\..\powerplant kopia\PowerPlant.cs">
       <Link>PowerPlant.cs</Link>

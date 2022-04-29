@@ -96,7 +96,7 @@ namespace PowerPlantCzarnobyl
             }
         }
 
-        private static void PrintValue(string name, AssetParameter value)
+        private static void PrintValue(string name, AssetParameterData value)
         {
             if (value.CurrentValue > value.MaxValue || value.CurrentValue < value.MinValue)
             {
@@ -112,7 +112,7 @@ namespace PowerPlantCzarnobyl
             }
         }
 
-        private void CatchError(PowerPlantDataSet plant, string name, AssetParameter value )
+        private void CatchError(PowerPlantDataSet plant, string name, AssetParameterData value )
         {
             Error error = new Error()
             {
