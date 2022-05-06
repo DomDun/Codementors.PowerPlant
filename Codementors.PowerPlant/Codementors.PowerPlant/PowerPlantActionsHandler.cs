@@ -2,6 +2,7 @@
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
 using System;
+using System.Collections.Generic;
 
 namespace PowerPlantCzarnobyl
 {
@@ -9,16 +10,16 @@ namespace PowerPlantCzarnobyl
     {
         private readonly CliHelper _cliHelper;
         private readonly LoginHandler _loginHandler;
-        private readonly ErrorService _errorService;
+        private readonly LibraryService _libraryService;
 
         public PowerPlantActionsHandler()
         {
             _cliHelper = new CliHelper();
             _loginHandler = new LoginHandler();
 
-            var errorRepostiory = new ErrorsRepository();
+            var libraryRepository = new LibraryRepository();
 
-            _errorService = new ErrorService(errorRepostiory);
+            _libraryService = new LibraryService(libraryRepository);
         }
         public void ProgramLoop(string loggedMember)
         {
@@ -40,8 +41,7 @@ namespace PowerPlantCzarnobyl
                         _loginHandler.DeleteMember(loggedMember);
                         break;
                     case "4":
-                        //todo: zliczanie energii
-                        ProducedPower();
+                        ShowProducedPower();
                         break;
                     case "5":
                         exit = true;
@@ -53,17 +53,59 @@ namespace PowerPlantCzarnobyl
             }
         }
 
-        private static void CurrentWorkStatus()
+        private void ShowProducedPower()
         {
-            PowerPlant.Instance.OnNewDataSetArrival += PowerPlantDataArrived;
+            _libraryService.ActualDataSender();
+            _libraryService.OnRecieveData += ProducedPower;
             if (Console.ReadKey().Key == ConsoleKey.Escape)
             {
-                PowerPlant.Instance.OnNewDataSetArrival -= PowerPlantDataArrived;
+                _libraryService.OnRecieveData -= ProducedPower;
                 Console.Clear();
             }
         }
 
-        private static void PowerPlantDataArrived(object sender, PowerPlantDataSet plant)
+        List<double> collectedPower = new List<double>();
+        private void ProducedPower(object sender, PowerPlantDataSetData plant)
+        {
+            Console.Clear();
+            
+            double currentTurbinePower = 0;
+            double totalPower = 0;
+            foreach (var turbine in plant.Turbines)
+            {
+                Console.WriteLine(turbine.Name);
+                PrintValue("InputVoltage", turbine.CurrentPower);
+                currentTurbinePower = CalculateProducedPower("CurrentPower", turbine.CurrentPower);
+                collectedPower.Add(currentTurbinePower);
+            }
+
+            collectedPower
+                .ForEach(item =>
+                {
+                    totalPower += currentTurbinePower;
+                });
+            double time = 7200;
+            Console.WriteLine($"\n power generated  {totalPower * (collectedPower.Count/time)}  MWH");
+        }
+
+        private double CalculateProducedPower(string name, AssetParameterData value)
+        {
+            var producedPower = value.CurrentValue;
+            return producedPower;
+        }
+
+        private void CurrentWorkStatus()
+        {
+            _libraryService.ActualDataSender();
+            _libraryService.OnRecieveData += PowerPlantDataArrived;
+            if (Console.ReadKey().Key == ConsoleKey.Escape)
+            {
+                _libraryService.OnRecieveData -= PowerPlantDataArrived;
+                Console.Clear();
+            }
+        }
+
+        private void PowerPlantDataArrived(object sender, PowerPlantDataSetData plant)
         {
             Console.Clear();
 
@@ -103,33 +145,13 @@ namespace PowerPlantCzarnobyl
                 Console.Write("\t" + name + "\t");
                 var defaultColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{ value.CurrentValue} {value.Unit} it will blow in any moment, we're totally fucked!!!");
+                Console.WriteLine($"{value.CurrentValue} {value.Unit} it will blow in any moment, we're totally fucked!!!");
                 Console.ForegroundColor = defaultColor;
             }
             else
             {
                 Console.WriteLine("\t" + name + "\t" + value.CurrentValue + " " + value.Unit);
             }
-        }
-
-        private void CatchError(PowerPlantDataSet plant, string name, AssetParameterData value )
-        {
-            Error error = new Error()
-            {
-                PlantName = plant.PlantName,
-                MachineName = name,
-                MachineValue = value.CurrentValue,
-                Unit = value.Unit,
-                errorTime = DateTime.Now,
-            };
-
-            _errorService.Add(error);
-        }
-        private static void ProducedPower()
-        {
-            Console.Clear();
-            var polishUnit = "w ch*j";
-            Console.WriteLine($"\nthis plant made {polishUnit} MwH so far\n");
         }
     }
 }
