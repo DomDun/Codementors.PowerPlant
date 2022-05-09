@@ -9,7 +9,8 @@ namespace PowerPlantCzarnobyl.Domain.Models
         public string Parameter { get; set; }
         public DateTime ErrorTime { get; set; }
         public string LoggedUser { get; set; }
-        public double MaxValue { get; set; }
+        
         public double MinValue { get; set; }
+        public double MaxValue { get; set; }
     }
 }

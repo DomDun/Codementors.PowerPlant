@@ -1,8 +1,9 @@
-﻿using PowerPlantCzarnobyl.Domain;
+﻿using Newtonsoft.Json;
+using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
 using System;
-using System.Collections.Generic;
+using System.IO;
 
 namespace PowerPlantCzarnobyl
 {
@@ -11,39 +12,50 @@ namespace PowerPlantCzarnobyl
         private readonly CliHelper _cliHelper;
         private readonly LoginHandler _loginHandler;
         private readonly LibraryService _libraryService;
+        private readonly ErrorService _errorService;
+        private readonly MemberService _memberService;
 
         public PowerPlantActionsHandler()
         {
             _cliHelper = new CliHelper();
-            _loginHandler = new LoginHandler();
 
+            var membersRepository = new MembersRepository();
             var libraryRepository = new LibraryRepository();
+            var errorsRepository = new ErrorsRepository();
+            var dateProvider = new DateProvider();
 
+            _loginHandler = new LoginHandler(membersRepository);
             _libraryService = new LibraryService(libraryRepository);
+            _errorService = new ErrorService(errorsRepository, dateProvider);
+            _memberService = new MemberService(membersRepository);
         }
         public void ProgramLoop(string loggedMember)
         {
             bool exit = false;
+            Member admin = _memberService.CheckMemberRole(loggedMember);
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Produced energy \n 5.Exit \n");
-
+                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Produced energy \n 5.Export file with errors \n 6.Exit \n");
+                
                 switch (operation)
                 {
                     case "1":
                         CurrentWorkStatus();
                         break;
                     case "2":
-                        _loginHandler.AddMember(loggedMember);
+                        _loginHandler.AddMember(admin);
                         break;
                     case "3":
-                        _loginHandler.DeleteMember(loggedMember);
+                        _loginHandler.DeleteMember(admin);
                         break;
                     case "4":
                         ShowProducedPower();
                         break;
                     case "5":
+                        ExportErrorsListToJson();
+                        break;
+                    case "6":
                         exit = true;
                         break;
                     default:
@@ -53,104 +65,60 @@ namespace PowerPlantCzarnobyl
             }
         }
 
+        private async void ExportErrorsListToJson()
+        {
+            DateTime startData = _cliHelper.GetDateFromUser("give me start date in format yyyy/MM/dd:GHH:mm");
+            DateTime endData = _cliHelper.GetDateFromUser("give me end date in format yyyy/MM/dd:GHH:mm");
+
+            Console.Write("Enter file name to save data: ");
+            string fileName = Console.ReadLine();
+            fileName += ".json";
+
+            while (File.Exists(fileName))
+            {
+                Console.WriteLine($"File {fileName} already exists! Choose different name: ");
+                fileName = Console.ReadLine();
+                fileName += ".json";
+            }
+
+            string json = JsonConvert.SerializeObject(await _errorService.GetAllErrorsAsync(startData, endData), Formatting.Indented);
+            File.WriteAllText(fileName, json);
+
+            if (!File.Exists(fileName))
+            {
+                var defaultColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"List of errors wasn't created, something went wrong....");
+                Console.ForegroundColor = defaultColor;
+            }
+            else
+            {
+                var defaultColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"List of errors was created succesfully :)");
+                Console.ForegroundColor = defaultColor;
+            }
+        }
+
         private void ShowProducedPower()
         {
             _libraryService.ActualDataSender();
-            _libraryService.OnRecieveData += ProducedPower;
+            _libraryService.OnRecieveData += _libraryService.ProducedPower;
             if (Console.ReadKey().Key == ConsoleKey.Escape)
             {
-                _libraryService.OnRecieveData -= ProducedPower;
+                _libraryService.OnRecieveData -= _libraryService.ProducedPower;
                 Console.Clear();
             }
-        }
-
-        List<double> collectedPower = new List<double>();
-        private void ProducedPower(object sender, PowerPlantDataSetData plant)
-        {
-            Console.Clear();
-            
-            double currentTurbinePower = 0;
-            double totalPower = 0;
-            foreach (var turbine in plant.Turbines)
-            {
-                Console.WriteLine(turbine.Name);
-                PrintValue("InputVoltage", turbine.CurrentPower);
-                currentTurbinePower = CalculateProducedPower("CurrentPower", turbine.CurrentPower);
-                collectedPower.Add(currentTurbinePower);
-            }
-
-            collectedPower
-                .ForEach(item =>
-                {
-                    totalPower += currentTurbinePower;
-                });
-            double time = 7200;
-            Console.WriteLine($"\n power generated  {totalPower * (collectedPower.Count/time)}  MWH");
-        }
-
-        private double CalculateProducedPower(string name, AssetParameterData value)
-        {
-            var producedPower = value.CurrentValue;
-            return producedPower;
         }
 
         private void CurrentWorkStatus()
         {
             _libraryService.ActualDataSender();
-            _libraryService.OnRecieveData += PowerPlantDataArrived;
+            _libraryService.OnRecieveData += _libraryService.PowerPlantDataArrived;
             if (Console.ReadKey().Key == ConsoleKey.Escape)
             {
-                _libraryService.OnRecieveData -= PowerPlantDataArrived;
+                _libraryService.OnRecieveData -= _libraryService.PowerPlantDataArrived;
                 Console.Clear();
-            }
-        }
-
-        private void PowerPlantDataArrived(object sender, PowerPlantDataSetData plant)
-        {
-            Console.Clear();
-
-            Console.WriteLine("Press the Escape (Esc) key to quit: \n");
-
-            Console.WriteLine(plant.PlantName + " " + DateTime.Now.ToString("O"));
-            foreach (var cauldron in plant.Cauldrons)
-            {
-                Console.WriteLine(cauldron.Name);
-                PrintValue("WaterPressure", cauldron.WaterPressure);
-                PrintValue("WaterTemperature", cauldron.WaterTemperature);
-                PrintValue("CamberTemperature", cauldron.CamberTemperature);
-            }
-
-            foreach (var turbine in plant.Turbines)
-            {
-                Console.WriteLine(turbine.Name);
-                PrintValue("SteamPressure", turbine.SteamPressure);
-                PrintValue("OverheaterSteamTemperature", turbine.OverheaterSteamTemperature);
-                PrintValue("OutputVoltage", turbine.OutputVoltage);
-                PrintValue("RotationSpeed", turbine.RotationSpeed);
-                PrintValue("CurrentPower", turbine.CurrentPower);
-            }
-
-            foreach (var transformator in plant.Transformators)
-            {
-                Console.WriteLine(transformator.Name);
-                PrintValue("InputVoltage", transformator.InputVoltage);
-                PrintValue("OutputVoltage", transformator.OutputVoltage);
-            }
-        }
-
-        private static void PrintValue(string name, AssetParameterData value)
-        {
-            if (value.CurrentValue > value.MaxValue || value.CurrentValue < value.MinValue)
-            {
-                Console.Write("\t" + name + "\t");
-                var defaultColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{value.CurrentValue} {value.Unit} it will blow in any moment, we're totally fucked!!!");
-                Console.ForegroundColor = defaultColor;
-            }
-            else
-            {
-                Console.WriteLine("\t" + name + "\t" + value.CurrentValue + " " + value.Unit);
             }
         }
     }

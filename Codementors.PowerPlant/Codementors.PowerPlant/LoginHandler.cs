@@ -1,20 +1,31 @@
 ﻿using PowerPlantCzarnobyl.Domain;
+using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
 using System;
 
 namespace PowerPlantCzarnobyl
 {
-    internal class LoginHandler
+    public interface ILoginHandler
+    {
+        string LoginMember();
+        bool DeleteMember(Member admin);
+        bool AddMember(Member admin);
+        void Clear();
+    }
+
+    public class LoginHandler : ILoginHandler
     {
         private readonly MemberService _memberService;
         private readonly CliHelper _cliHelper = new CliHelper();
+        private readonly IMembersRepository _membersRepository;
 
-        public LoginHandler()
+        public LoginHandler(IMembersRepository membersRepository)
         {
-            var memberRepostiory = new MembersRepository();
+            var membersRepostiory = new MembersRepository();
 
-            _memberService = new MemberService(memberRepostiory);
+            _membersRepository = membersRepository;
+            _memberService = new MemberService(membersRepostiory);
         }
 
         public string LoginMember()
@@ -37,10 +48,9 @@ namespace PowerPlantCzarnobyl
             return login;
         }
 
-        public void DeleteMember(string loggedMember)
+        public bool DeleteMember(Member admin)
         {
-            Console.Clear();
-            Member admin = _memberService.CheckMemberRole(loggedMember);
+            Clear();
 
             if (admin.Role == "Admin")
             {
@@ -48,11 +58,11 @@ namespace PowerPlantCzarnobyl
                 do
                 {
                     string password = _cliHelper.GetStringFromUser("Type Your password to confirm You are Admin");
-                    correctCredentials = _memberService.CheckUserCredentials(loggedMember, password);
-                } while (!correctCredentials); 
-                
+                    correctCredentials = _memberService.CheckUserCredentials(admin.Login, password);
+                } while (!correctCredentials);
+
                 string loginToDelete = _cliHelper.GetStringFromUser("Type login of member You want to delete");
-                if (loggedMember == loginToDelete)
+                if (admin.Login == loginToDelete)
                 {
                     Console.WriteLine("\nYou can't delete Your own account\n");
                 }
@@ -66,17 +76,18 @@ namespace PowerPlantCzarnobyl
 
                     Console.WriteLine(message);
                 }
+                return true;
             }
             else
             {
                 Console.WriteLine("You are not authorized to add new member. Go to Your CEO for a promotion :)");
+                return false;
             }
         }
 
-        public void AddMember(string loggedMember)
+        public bool AddMember(Member admin)
         {
-            Console.Clear();
-            Member admin = _memberService.CheckMemberRole(loggedMember);
+            Clear();
 
             if (admin.Role == "Admin")
             {
@@ -89,11 +100,15 @@ namespace PowerPlantCzarnobyl
                     : "\nError when adding Member\n";
 
                 Console.WriteLine(message);
+                return true;
             }
             else
             {
                 Console.WriteLine("\nYou are not authorized to add new member. Go to Your CEO for a promotion :)\n");
+                return false;
             }
         }
+
+        public void Clear() => Console.Clear();
     }
 }

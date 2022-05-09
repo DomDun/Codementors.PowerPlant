@@ -7,6 +7,6 @@ CREATE TABLE [Errors] (
 	[Parameter] VARCHAR(255) NOT NULL,
 	[ErrorTime] DateTime2,
 	[LoggedUser] VARCHAR(255) NOT NULL,
-	[MaxValue] FLOAT (8),
-	[MinValue] FLOAT (8)
+	[MinValue] FLOAT (8),
+	[MaxValue] FLOAT (8)
 )

@@ -11,7 +11,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantDBConnectionString"].ConnectionString;
 
-        public bool AddMember(Member member)
+        public bool Add(Member member)
         {
             try
             {

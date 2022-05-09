@@ -14,7 +14,7 @@ namespace PowerPlantCzarnobyl.Domain
 
         public bool Add(Member member)
         {
-            return _membersRepository.AddMember(member);
+            return _membersRepository.Add(member);
         }
         
         public bool CheckUserCredentials(string login, string password)
