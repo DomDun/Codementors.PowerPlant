@@ -21,8 +21,9 @@ namespace PowerPlantCzarnobyl
             var libraryRepository = new LibraryRepository();
             var dateProvider = new DateProvider();
             var membersRepository = new MembersRepository();
+            var membersService = new MemberService(membersRepository);
 
-            _loginHandler = new LoginHandler(membersRepository);
+            _loginHandler = new LoginHandler(membersService);
             _errorService = new ErrorService(errorRepostiory, dateProvider);
             _libraryService = new LibraryService(libraryRepository);
         }

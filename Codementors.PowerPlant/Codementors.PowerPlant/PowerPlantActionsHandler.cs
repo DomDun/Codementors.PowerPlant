@@ -19,15 +19,15 @@ namespace PowerPlantCzarnobyl
         {
             _cliHelper = new CliHelper();
 
-            var membersRepository = new MembersRepository();
             var libraryRepository = new LibraryRepository();
             var errorsRepository = new ErrorsRepository();
             var dateProvider = new DateProvider();
+            var membersRepository = new MembersRepository();
 
-            _loginHandler = new LoginHandler(membersRepository);
             _libraryService = new LibraryService(libraryRepository);
             _errorService = new ErrorService(errorsRepository, dateProvider);
             _memberService = new MemberService(membersRepository);
+            _loginHandler = new LoginHandler(_memberService);
         }
         public void ProgramLoop(string loggedMember)
         {

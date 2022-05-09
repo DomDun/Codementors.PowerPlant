@@ -11,6 +11,7 @@ namespace PowerPlantCzarnobyl.Tests
     public class LoginHandlerTests
     {
         private Mock<ILoginHandler> _loginHandlerMock;
+        private Mock<IMembersService> _membersServiceMock;
         private Mock<IMembersRepository> _membersRepositoryMock;
 
         private LoginHandler _sut;
@@ -19,9 +20,10 @@ namespace PowerPlantCzarnobyl.Tests
         public void Setup()
         {
             _loginHandlerMock = new Mock<ILoginHandler>();
+            _membersServiceMock = new Mock<IMembersService>();
             _membersRepositoryMock = new Mock<IMembersRepository>();
 
-            _sut = new LoginHandler(_membersRepositoryMock.Object);
+            _sut = new LoginHandler(_membersServiceMock.Object);
         }
 
         [Test]

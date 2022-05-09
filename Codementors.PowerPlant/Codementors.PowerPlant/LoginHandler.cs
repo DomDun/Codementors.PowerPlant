@@ -18,13 +18,13 @@ namespace PowerPlantCzarnobyl
     {
         private readonly MemberService _memberService;
         private readonly CliHelper _cliHelper = new CliHelper();
-        private readonly IMembersRepository _membersRepository;
+        private readonly IMembersService _iMembersService;
 
-        public LoginHandler(IMembersRepository membersRepository)
+        public LoginHandler(IMembersService iMembersService)
         {
             var membersRepostiory = new MembersRepository();
 
-            _membersRepository = membersRepository;
+            _iMembersService = iMembersService;
             _memberService = new MemberService(membersRepostiory);
         }
 
