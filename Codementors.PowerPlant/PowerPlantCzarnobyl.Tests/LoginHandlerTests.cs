@@ -12,7 +12,7 @@ namespace PowerPlantCzarnobyl.Tests
     {
         private Mock<ILoginHandler> _loginHandlerMock;
         private Mock<IMembersService> _membersServiceMock;
-        private Mock<IMembersRepository> _membersRepositoryMock;
+        //private Mock<IMembersRepository> _membersRepositoryMock;
 
         private LoginHandler _sut;
 
@@ -21,7 +21,7 @@ namespace PowerPlantCzarnobyl.Tests
         {
             _loginHandlerMock = new Mock<ILoginHandler>();
             _membersServiceMock = new Mock<IMembersService>();
-            _membersRepositoryMock = new Mock<IMembersRepository>();
+            //_membersRepositoryMock = new Mock<IMembersRepository>();
 
             _sut = new LoginHandler(_membersServiceMock.Object);
         }
@@ -29,17 +29,17 @@ namespace PowerPlantCzarnobyl.Tests
         [Test]
         public void AddMember_Member_AdminCanAddMember()
         {
-            _loginHandlerMock
-                .SetupRemove(x => x.Clear());
+            //_loginHandlerMock
+            //    .SetupRemove(x => x.Clear());
 
             var loggedMember = new Member();
             loggedMember.Login = "admin";
             loggedMember.Role = "Admin";
 
-            //var members = new List<Member>();
+            var members = new List<Member>();
 
-            //_loginHandlerMock
-            //    .Setup(x => x.AddMember(Capture.In(members)));
+            _loginHandlerMock
+                .Setup(x => x.AddMember(Capture.In(members)));
 
             var success = _sut.AddMember(loggedMember);
 
@@ -86,7 +86,7 @@ namespace PowerPlantCzarnobyl.Tests
             var success = _sut.DeleteMember(loggedMember);
 
             Assert.AreEqual(false, success);
-            //todo: naprawić te testy
+            //todo: naprawić te cholerne testy
         }
 
     }

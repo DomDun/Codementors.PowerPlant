@@ -16,16 +16,16 @@ namespace PowerPlantCzarnobyl
 
     public class LoginHandler : ILoginHandler
     {
-        private readonly MemberService _memberService;
+        //private readonly MemberService _memberService;
         private readonly CliHelper _cliHelper = new CliHelper();
         private readonly IMembersService _iMembersService;
 
         public LoginHandler(IMembersService iMembersService)
         {
-            var membersRepostiory = new MembersRepository();
+            //var membersRepostiory = new MembersRepository();
 
             _iMembersService = iMembersService;
-            _memberService = new MemberService(membersRepostiory);
+            //_memberService = new MemberService(membersRepostiory);
         }
 
         public string LoginMember()
@@ -33,7 +33,7 @@ namespace PowerPlantCzarnobyl
             string login = _cliHelper.GetStringFromUser("Type Your login");
             string password = _cliHelper.GetStringFromUser("Type Your password");
 
-            bool correctCredentials = _memberService.CheckUserCredentials(login, password);
+            bool correctCredentials = _iMembersService.CheckUserCredentials(login, password);
 
             if (correctCredentials)
             {
@@ -58,7 +58,7 @@ namespace PowerPlantCzarnobyl
                 do
                 {
                     string password = _cliHelper.GetStringFromUser("Type Your password to confirm You are Admin");
-                    correctCredentials = _memberService.CheckUserCredentials(admin.Login, password);
+                    correctCredentials = _iMembersService.CheckUserCredentials(admin.Login, password);
                 } while (!correctCredentials);
 
                 string loginToDelete = _cliHelper.GetStringFromUser("Type login of member You want to delete");
@@ -68,7 +68,7 @@ namespace PowerPlantCzarnobyl
                 }
                 else
                 {
-                    bool success = _memberService.Delete(loginToDelete);
+                    bool success = _iMembersService.Delete(loginToDelete);
 
                     string message = success
                         ? "\nMember deleted successfully\n"
@@ -93,7 +93,7 @@ namespace PowerPlantCzarnobyl
             {
                 Member member = _cliHelper.GetMemberFromAdmin();
 
-                bool success = _memberService.Add(member);
+                bool success = _iMembersService.Add(member);
 
                 string message = success
                     ? "\nMember added successfully\n"
