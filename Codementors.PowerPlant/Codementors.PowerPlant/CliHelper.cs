@@ -44,5 +44,19 @@ namespace PowerPlantCzarnobyl
 
             return member;
         }
+
+        internal DateTime GetDateFromUser(string message)
+        {
+            Console.WriteLine(message);
+            string line = Console.ReadLine();
+            DateTime data;
+            while (!DateTime.TryParseExact(line, "yyyy/MM/dd:GHH:mm", null, System.Globalization.DateTimeStyles.None, out data))
+            {
+                Console.WriteLine("Invalid date, please retry");
+                line = Console.ReadLine();
+            }
+
+            return data;
+        }
     }
 }

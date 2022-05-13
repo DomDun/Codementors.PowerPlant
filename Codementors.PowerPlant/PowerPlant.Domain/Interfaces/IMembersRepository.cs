@@ -4,7 +4,7 @@ namespace PowerPlantCzarnobyl.Domain.Interfaces
 {
     public interface IMembersRepository
     {
-        bool AddMember(Member member);
+        bool Add(Member member);
         Member GetMember(string login);
         bool DeleteMember(string login);
     }

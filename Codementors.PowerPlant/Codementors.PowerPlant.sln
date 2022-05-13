@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlantCzarnobyl.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlantCzarnobyl.Infrastructure", "PowerPlant.Infrastructure\PowerPlantCzarnobyl.Infrastructure.csproj", "{EB96C09A-9C31-4955-8D24-1ABE9243E4B4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6B396840-6454-4EA4-9EF9-C25E887AE6CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlantCzarnobyl.Tests", "PowerPlantCzarnobyl.Tests\PowerPlantCzarnobyl.Tests.csproj", "{0788A929-482A-4D37-9FD8-500ED81B742D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{EB96C09A-9C31-4955-8D24-1ABE9243E4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB96C09A-9C31-4955-8D24-1ABE9243E4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB96C09A-9C31-4955-8D24-1ABE9243E4B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0788A929-482A-4D37-9FD8-500ED81B742D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0788A929-482A-4D37-9FD8-500ED81B742D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0788A929-482A-4D37-9FD8-500ED81B742D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0788A929-482A-4D37-9FD8-500ED81B742D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0788A929-482A-4D37-9FD8-500ED81B742D} = {6B396840-6454-4EA4-9EF9-C25E887AE6CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {391B3177-78A4-4DE4-8DAA-85DAD779DE83}

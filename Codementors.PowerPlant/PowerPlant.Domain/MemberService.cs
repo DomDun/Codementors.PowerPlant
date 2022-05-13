@@ -3,7 +3,15 @@ using PowerPlantCzarnobyl.Domain.Models;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public class MemberService
+    public interface IMembersService
+    {
+        bool Add(Member member);
+        bool CheckUserCredentials(string login, string password);
+        Member CheckMemberRole(string login);
+        bool Delete(string login);
+    }
+
+    public class MemberService : IMembersService
     {
         private readonly IMembersRepository _membersRepository;
 
@@ -14,7 +22,7 @@ namespace PowerPlantCzarnobyl.Domain
 
         public bool Add(Member member)
         {
-            return _membersRepository.AddMember(member);
+            return _membersRepository.Add(member);
         }
         
         public bool CheckUserCredentials(string login, string password)
