@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CCCD3B95-2096-42C2-AC70-A209AF123041}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PowerPlantCzarnobyl.Domain</RootNamespace>
-    <AssemblyName>PowerPlantCzarnobyl.Domain</AssemblyName>
+    <ProjectGuid>{91DD9B00-64D2-466E-8306-376A8B85E953}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PowerPlantCzarnobyl.WebApi.Client</RootNamespace>
+    <AssemblyName>PowerPlantCzarnobyl.WebApi.Client</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -44,28 +46,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleManager.cs" />
-    <Compile Include="DateProvider.cs" />
-    <Compile Include="ErrorService.cs" />
-    <Compile Include="InspectionService.cs" />
-    <Compile Include="Interfaces\IMembersRepository.cs" />
-    <Compile Include="Interfaces\IErrorsRepository.cs" />
-    <Compile Include="Interfaces\IInspectionRepository.cs" />
-    <Compile Include="Interfaces\IRecievedDataRepository.cs" />
-    <Compile Include="Models\Inspection.cs" />
-    <Compile Include="RecievedDataService.cs" />
-    <Compile Include="Models\AssetParameterData.cs" />
-    <Compile Include="Models\CauldronData.cs" />
+    <Compile Include="Clients\ErrorWebApiClient.cs" />
+    <Compile Include="Clients\InspectionWebApiClient.cs" />
+    <Compile Include="Clients\MemberWebApiClient.cs" />
+    <Compile Include="Clients\RecievedDataWebApiClient.cs" />
+    <Compile Include="CliHelper.cs" />
+    <Compile Include="ErrorsHandler.cs" />
+    <Compile Include="InspectionHandler.cs" />
+    <Compile Include="LoginHandler.cs" />
+    <Compile Include="MemberHandler.cs" />
+    <Compile Include="Models\AssetParameter.cs" />
+    <Compile Include="Models\Cauldron.cs" />
     <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\PowerPlantDataSetData.cs" />
-    <Compile Include="Models\TransformatorData.cs" />
-    <Compile Include="Models\TurbineData.cs" />
-    <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\Inspection.cs" />
+    <Compile Include="Models\MemberWebApi.cs" />
+    <Compile Include="Models\MemberCredentials.cs" />
+    <Compile Include="Models\PowerPlantDataSet.cs" />
+    <Compile Include="Models\Transformator.cs" />
+    <Compile Include="Models\Turbine.cs" />
+    <Compile Include="PowerPlantActionsHandler.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MemberService.cs" />
+    <Compile Include="RecievedDataHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerPlant.Domain\PowerPlantCzarnobyl.Domain.csproj">
+      <Project>{CCCD3B95-2096-42C2-AC70-A209AF123041}</Project>
+      <Name>PowerPlantCzarnobyl.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

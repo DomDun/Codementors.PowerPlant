@@ -1,17 +1,9 @@
-﻿using PowerPlantCzarnobyl.Domain.Models;
+﻿using PowerPlantCzarnobyl.WebApi.Client.Models;
 using System;
 
-namespace PowerPlantCzarnobyl
+namespace PowerPlantCzarnobyl.WebApi.Client
 {
-    public interface ICliHelper
-    {
-        string GetStringFromUser(string message);
-        Member GetMemberFromAdmin();
-        DateTime GetDateFromUser(string message);
-        Inspection GetInspectionFromUser();
-    }
-
-    internal class CliHelper : ICliHelper
+    public class CliHelper
     {
         public string GetStringFromUser(string message)
         {
@@ -32,9 +24,41 @@ namespace PowerPlantCzarnobyl
             return inputFromUser;
         }
 
-        public Member GetMemberFromAdmin()
+        public Inspection GetInspectionFromUser()
         {
-            Member member = new Member
+            Inspection inspection = new Inspection
+            {
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                EndDate = DateTime.Now,
+                Name = string.Empty,
+                Comments = string.Empty,
+            };
+            return inspection;
+        }
+
+        internal int GetIntFromUser(string message)
+        {
+            int result = 0;
+            bool success = false;
+
+            while (!success)
+            {
+                string text = GetStringFromUser(message);
+                success = int.TryParse(text, out result);
+
+                if (!success)
+                {
+                    Console.WriteLine("Not a number. Try again...");
+                }
+            }
+
+            return result;
+        }
+
+        public MemberWebApi GetMemberFromAdmin()
+        {
+            MemberWebApi member = new MemberWebApi
             {
                 Login = GetStringFromUser("Add login of new member"),
                 Password = GetStringFromUser("Add pasword"),
@@ -48,7 +72,7 @@ namespace PowerPlantCzarnobyl
                 {
                     Console.WriteLine("You have to type Admin or User! try again");
                 }
-            }while (member.Role != "Admin" && member.Role != "User");
+            } while (member.Role != "Admin" && member.Role != "User");
 
             return member;
         }
@@ -65,19 +89,6 @@ namespace PowerPlantCzarnobyl
             }
 
             return data;
-        }
-
-        public Inspection GetInspectionFromUser()
-        {
-            Inspection inspection = new Inspection
-            {
-                CreateDate = DateTime.Now,
-                UpdateDate = DateTime.Now,
-                EndDate = DateTime.Now,
-                Name = string.Empty,
-                Comments = string.Empty,
-            };
-            return inspection;
         }
     }
 }

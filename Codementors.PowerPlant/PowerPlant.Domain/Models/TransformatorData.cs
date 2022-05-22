@@ -2,7 +2,6 @@
 
 namespace PowerPlantCzarnobyl.Domain.Models
 {
-    [Serializable]
     public class TransformatorData
     {
         public string Name { get; set; }

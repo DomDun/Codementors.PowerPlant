@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace PowerPlantCzarnobyl.Domain.Models
+﻿namespace PowerPlantCzarnobyl.WebApi.Client.Models
 {
-    public class AssetParameterData
+    public class AssetParameter
     {
         public double MinValue { get; set; }
         public double MaxValue { get; set; }

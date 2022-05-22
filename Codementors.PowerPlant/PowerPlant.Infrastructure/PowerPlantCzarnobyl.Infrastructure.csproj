@@ -49,7 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorsRepository.cs" />
-    <Compile Include="LibraryRepository.cs" />
+    <Compile Include="InspectionRepository.cs" />
+    <Compile Include="RecievedDataRepository.cs" />
     <Compile Include="MembersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Sql\02.UpdateDatabase HW5.sql" />
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Sql\03.UpgradeDatabaseHW6" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\PowerPlantDataProvider.dll" />

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace PowerPlantCzarnobyl.Infrastructure
 {
-    public class LibraryRepository : ILibraryRepository
+    public class RecievedDataRepository : IRecievedDataRepository
     {
         public event EventHandler<PowerPlantDataSetData> OnRecievedDataToDomain = null;
         public void Subscribe()
@@ -123,10 +123,10 @@ namespace PowerPlantCzarnobyl.Infrastructure
                 .ToArray()
             };
 
-            //if (OnRecievedDataToDomain != null)
-            //{
+            if (OnRecievedDataToDomain != null)
+            {
                 OnRecievedDataToDomain(sender, plantData);
-            //}
+            }
         }
     }
 }

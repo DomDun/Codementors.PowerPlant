@@ -14,10 +14,10 @@ namespace PowerPlantCzarnobyl.Tests
         private Mock<IErrorsRepository> _errorsRepositoryMock;
         private Mock<IDateProvider> _dateProviderMock;
 
-        private DateTime _now = new DateTime(1992, 11, 02, 20, 10, 00);
-        private string _user = "Domin";
-        private string _machineName = "Turbine";
-        private string _parameter = "RotationSpeed";
+        private readonly DateTime _now = new DateTime(1992, 11, 02, 20, 10, 00);
+        private readonly string _user = "Domin";
+        private readonly string _machineName = "Turbine";
+        private readonly string _parameter = "RotationSpeed";
         private PowerPlantDataSetData _plant;
         private ErrorService _sut;
 
@@ -41,11 +41,13 @@ namespace PowerPlantCzarnobyl.Tests
         [Test]
         public void CheckValue_AssetParameterData_ParameterIsOutOfTheRange()
         {
-            var value = new AssetParameterData();
-            value.MinValue = 2000;
-            value.MaxValue = 2200;
-            value.CurrentValue = 2400;
-            
+            var value = new AssetParameterData
+            {
+                MinValue = 2000,
+                MaxValue = 2200,
+                CurrentValue = 2400
+            };
+
             var success = _sut.CheckValue(_machineName, _parameter, value, _plant, _user);
 
             Assert.AreEqual(false, success);
@@ -54,10 +56,12 @@ namespace PowerPlantCzarnobyl.Tests
         [Test]
         public void CheckValue_AssetParameterData_ParameterIsInRange()
         {
-            var value = new AssetParameterData();
-            value.MinValue = 2000;
-            value.MaxValue = 2200;
-            value.CurrentValue = 2100;
+            var value = new AssetParameterData
+            {
+                MinValue = 2000,
+                MaxValue = 2200,
+                CurrentValue = 2100
+            };
 
             var success = _sut.CheckValue(_machineName, _parameter, value, _plant, _user);
 
@@ -67,10 +71,12 @@ namespace PowerPlantCzarnobyl.Tests
         [Test]
         public void AddError_Error_ErrorIsAddedSuccesfully()
         {
-            var value = new AssetParameterData();
-            value.MinValue = 2000;
-            value.MaxValue = 2200;
-            value.CurrentValue = 2400;
+            var value = new AssetParameterData
+            {
+                MinValue = 2000,
+                MaxValue = 2200,
+                CurrentValue = 2400
+            };
 
             var errors = new List<Error>();
 
@@ -93,10 +99,12 @@ namespace PowerPlantCzarnobyl.Tests
         [Test]
         public void AddError_Error_ErrorIsNotAdded()
         {
-            var value = new AssetParameterData();
-            value.MinValue = 2000;
-            value.MaxValue = 2200;
-            value.CurrentValue = 2100;
+            var value = new AssetParameterData
+            {
+                MinValue = 2000,
+                MaxValue = 2200,
+                CurrentValue = 2100
+            };
 
             var errors = new List<Error>();
 
