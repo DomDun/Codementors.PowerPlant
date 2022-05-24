@@ -54,6 +54,7 @@
     <Compile Include="MembersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Sql\02.UpdateDatabase HW5.sql" />
+    <Content Include="Sql\03.UpgradeDatabaseHW6.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PowerPlant.Domain\PowerPlantCzarnobyl.Domain.csproj">
@@ -63,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Sql\03.UpgradeDatabaseHW6" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\PowerPlantDataProvider.dll" />
