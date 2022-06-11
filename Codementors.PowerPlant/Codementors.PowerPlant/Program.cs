@@ -12,20 +12,22 @@ namespace PowerPlantCzarnobyl
 
         private readonly LoginHandler _loginHandler;
         private static readonly PowerPlantActionsHandler _powerPlantActionsHandler = new PowerPlantActionsHandler();
-        private readonly LibraryService _libraryService;
+        private readonly RecievedDataService _recievedDataService;
         private readonly ErrorService _errorService;
 
         public Program()
         {
             var errorRepostiory = new ErrorsRepository();
-            var libraryRepository = new LibraryRepository();
+            var recievedDataRepository = new RecievedDataRepository();
             var dateProvider = new DateProvider();
+            var consoleManager = new ConsoleManager();
             var membersRepository = new MembersRepository();
             var membersService = new MemberService(membersRepository);
+            var cliHelper = new CliHelper();
 
-            _loginHandler = new LoginHandler(membersService);
+            _loginHandler = new LoginHandler(membersService, consoleManager, cliHelper);
             _errorService = new ErrorService(errorRepostiory, dateProvider);
-            _libraryService = new LibraryService(libraryRepository);
+            _recievedDataService = new RecievedDataService(recievedDataRepository);
         }
         string loggedMember = null;
         public void Run()
@@ -50,8 +52,8 @@ namespace PowerPlantCzarnobyl
 
         public void StartWork()
         {
-            _libraryService.ActualDataSender();
-            _libraryService.OnRecieveData += _errorService.CheckIfMachinesWorkCorrectly;
+            _recievedDataService.ActualDataSender();
+            _recievedDataService.OnRecieveData += _errorService.CheckIfMachinesWorkCorrectly;
         }
     }
 }

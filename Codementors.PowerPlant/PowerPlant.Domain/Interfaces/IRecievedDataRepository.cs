@@ -1,13 +1,9 @@
 ﻿using PowerPlantCzarnobyl.Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain.Interfaces
 {
-    public interface ILibraryRepository
+    public interface IRecievedDataRepository
     {
         event EventHandler<PowerPlantDataSetData> OnRecievedDataToDomain;
         void Subscribe();

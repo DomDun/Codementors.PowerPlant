@@ -1,7 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Domain;
-using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
-using PowerPlantCzarnobyl.Infrastructure;
 using System;
 
 namespace PowerPlantCzarnobyl
@@ -10,22 +8,20 @@ namespace PowerPlantCzarnobyl
     {
         string LoginMember();
         bool DeleteMember(Member admin);
-        bool AddMember(Member admin);
-        void Clear();
+        bool AddMember(Member loggedUser);
     }
 
     public class LoginHandler : ILoginHandler
     {
-        //private readonly MemberService _memberService;
-        private readonly CliHelper _cliHelper = new CliHelper();
+        private readonly ICliHelper _cliHelper;
         private readonly IMembersService _iMembersService;
+        private readonly IConsoleManager _iConsoleManager;
 
-        public LoginHandler(IMembersService iMembersService)
+        public LoginHandler(IMembersService iMembersService, IConsoleManager iConsoleManager, ICliHelper iCliHelper)
         {
-            //var membersRepostiory = new MembersRepository();
-
             _iMembersService = iMembersService;
-            //_memberService = new MemberService(membersRepostiory);
+            _iConsoleManager = iConsoleManager;
+            _cliHelper = iCliHelper;
         }
 
         public string LoginMember()
@@ -37,78 +33,73 @@ namespace PowerPlantCzarnobyl
 
             if (correctCredentials)
             {
-                Console.WriteLine($"Hello {login}!");
+                _iConsoleManager.WriteLine($"Hello {login}!");
             }
             else
             {
-                Console.WriteLine("Login unsuccesful. Try again...");
+                _iConsoleManager.WriteLine("Login unsuccesful. Try again...");
                 return null;
             }
 
             return login;
         }
 
-        public bool DeleteMember(Member admin)
+        public bool DeleteMember(Member loggedUser)
         {
-            Clear();
+            _iConsoleManager.Clear();
 
-            if (admin.Role == "Admin")
-            {
-                bool correctCredentials;
-                do
-                {
-                    string password = _cliHelper.GetStringFromUser("Type Your password to confirm You are Admin");
-                    correctCredentials = _iMembersService.CheckUserCredentials(admin.Login, password);
-                } while (!correctCredentials);
-
-                string loginToDelete = _cliHelper.GetStringFromUser("Type login of member You want to delete");
-                if (admin.Login == loginToDelete)
-                {
-                    Console.WriteLine("\nYou can't delete Your own account\n");
-                }
-                else
-                {
-                    bool success = _iMembersService.Delete(loginToDelete);
-
-                    string message = success
-                        ? "\nMember deleted successfully\n"
-                        : "\nError when deleting Member\n";
-
-                    Console.WriteLine(message);
-                }
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("You are not authorized to add new member. Go to Your CEO for a promotion :)");
-                return false;
-            }
-        }
-
-        public bool AddMember(Member admin)
-        {
-            Clear();
-
-            if (admin.Role == "Admin")
-            {
-                Member member = _cliHelper.GetMemberFromAdmin();
-
-                bool success = _iMembersService.Add(member);
-
-                string message = success
-                    ? "\nMember added successfully\n"
-                    : "\nError when adding Member\n";
-
-                Console.WriteLine(message);
-                return true;
-            }
-            else
+            if (loggedUser.Role != "Admin")
             {
                 Console.WriteLine("\nYou are not authorized to add new member. Go to Your CEO for a promotion :)\n");
                 return false;
             }
+
+            bool correctCredentials;
+            do
+            {
+                string password = _cliHelper.GetStringFromUser("Type Your password to confirm You are Admin");
+                correctCredentials = _iMembersService.CheckUserCredentials(loggedUser.Login, password);
+            } while (!correctCredentials);
+
+            string loginToDelete = _cliHelper.GetStringFromUser("Type login of member You want to delete");
+            if (loggedUser.Login == loginToDelete)
+            {
+                _iConsoleManager.WriteLine("\nYou can't delete Your own account\n");
+                return false;
+            }
+            else
+            {
+                bool success = _iMembersService.Delete(loginToDelete);
+
+                string message = success
+                    ? "\nMember deleted successfully\n"
+                    : "\nError when deleting Member\n";
+
+                _iConsoleManager.WriteLine(message);
+                return success;
+            }
         }
 
-        public void Clear() => Console.Clear();
+        public bool AddMember(Member loggedUser)
+        {
+            _iConsoleManager.Clear();
+
+            if(loggedUser.Role != "Admin")
+            {
+                Console.WriteLine("\nYou are not authorized to add new member. Go to Your CEO for a promotion :)\n");
+                return false;
+            }
+
+            Member member = _cliHelper.GetMemberFromAdmin();
+
+            bool success = _iMembersService.Add(member);
+
+            string message = success
+                ? "\nMember added successfully\n"
+                : "\nError when adding Member\n";
+
+            _iConsoleManager.WriteLine(message);
+            return success;
+        }
     }
 }
