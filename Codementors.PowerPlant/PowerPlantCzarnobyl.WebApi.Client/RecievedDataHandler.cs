@@ -83,56 +83,5 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 Console.WriteLine("\t" + name + "\t" + value.CurrentValue + " " + value.Unit);
             }
         }
-
-        public void ShowProducedPower()
-        {
-            var timer = new Timer(1000);
-            timer.Elapsed += ProducedPower;
-            timer.Interval = 1000;
-            timer.Start();
-
-            ConsoleKeyInfo key;
-            do
-            {
-                key = Console.ReadKey();
-            } while (key.Key != ConsoleKey.Escape);
-
-            timer.Stop();
-            Console.Clear();
-            return;
-        }
-
-        List<double> collectedPower = new List<double>();
-        public void ProducedPower(object sender, ElapsedEventArgs cos)
-        {
-            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
-
-            Console.Clear();
-
-            double currentTurbinePower = 0;
-            double totalPower = 0;
-            foreach (var turbine in plant.Turbines)
-            {
-                Console.WriteLine(turbine.Name);
-                PrintValue("InputVoltage", turbine.CurrentPower);
-                currentTurbinePower = CalculateProducedPower("CurrentPower", turbine.CurrentPower);
-                collectedPower.Add(currentTurbinePower);
-            }
-
-            collectedPower
-                .ForEach(item =>
-                {
-                    totalPower += currentTurbinePower;
-                });
-            double time = 7200;
-
-            Console.WriteLine($"\n power generated  {totalPower * (collectedPower.Count / time)}  MWH");
-        }
-
-        private double CalculateProducedPower(string name, AssetParameter value)
-        {
-            var producedPower = value.CurrentValue;
-            return producedPower;
-        }
     }
 }
