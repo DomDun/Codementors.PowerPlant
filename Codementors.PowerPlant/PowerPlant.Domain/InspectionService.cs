@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public class InspectionService
+    public interface IInspectionService
+    {
+        Task<bool> AddInspection(Inspection inspection);
+        Task<List<Inspection>> GetAllInspections();
+    }
+
+    public class InspectionService : IInspectionService
     {
         private readonly IInspectionRepository _inspectionRepository;
         public string _loggedUser;
@@ -16,14 +22,14 @@ namespace PowerPlantCzarnobyl.Domain
             _inspectionRepository = inspectionRepository;
         }
 
-        public bool AddInspection(Inspection inspection)
+        public async Task<bool> AddInspection(Inspection inspection)
         {
-            return _inspectionRepository.AddInspection(inspection);
+            return await _inspectionRepository.AddInspection(inspection);
         }
 
-        public async Task<List<Inspection>> GetInspectionsByDates(DateTime startData, DateTime endData)
+        public async Task<List<Inspection>> GetAllInspections()
         {
-            return await _inspectionRepository.GetInspectionsAsync(startData, endData);
+            return await _inspectionRepository.GetAllInspectionsAsync();
         }
     }
 }

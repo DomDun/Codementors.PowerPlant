@@ -4,8 +4,14 @@ using System;
 
 namespace PowerPlantCzarnobyl.Domain
 {
+    public interface IRecievedDataService
+    {
+        void ActualDataSender();
+        PowerPlantDataSetData GetNewDataSet();
+        void RecievedDataSender(object sender, PowerPlantDataSetData plant);
+    }
 
-    public class RecievedDataService
+    public class RecievedDataService : IRecievedDataService
     {
         public static RecievedDataService Instance { get; set; }
 
@@ -18,8 +24,6 @@ namespace PowerPlantCzarnobyl.Domain
         public RecievedDataService(IRecievedDataRepository recievedDataRepository)
         {
             _recievedDataRepository = recievedDataRepository;
-
-             _recievedDataRepository.OnRecievedDataToDomain += RecievedDataSender;
         }
         public void ActualDataSender()
         {

@@ -24,38 +24,6 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             return inputFromUser;
         }
 
-        public Inspection GetInspectionFromUser()
-        {
-            Inspection inspection = new Inspection
-            {
-                CreateDate = DateTime.Now,
-                UpdateDate = DateTime.Now,
-                EndDate = DateTime.Now,
-                Name = string.Empty,
-                Comments = string.Empty,
-            };
-            return inspection;
-        }
-
-        internal int GetIntFromUser(string message)
-        {
-            int result = 0;
-            bool success = false;
-
-            while (!success)
-            {
-                string text = GetStringFromUser(message);
-                success = int.TryParse(text, out result);
-
-                if (!success)
-                {
-                    Console.WriteLine("Not a number. Try again...");
-                }
-            }
-
-            return result;
-        }
-
         public MemberWebApi GetMemberFromAdmin()
         {
             MemberWebApi member = new MemberWebApi
@@ -68,11 +36,11 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             do
             {
                 member.Role = GetStringFromUser("Add role for new member");
-                if (member.Role != "Admin" && member.Role != "User")
+                if (member.Role != "Admin" && member.Role != "User" && member.Role != "Engineer")
                 {
-                    Console.WriteLine("You have to type Admin or User! try again");
+                    Console.WriteLine("You have to type Admin or User or Engineer! try again");
                 }
-            } while (member.Role != "Admin" && member.Role != "User");
+            } while (member.Role != "Admin" && member.Role != "User" && member.Role != "Engineer");
 
             return member;
         }

@@ -21,7 +21,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client.Clients
         {
             try
             {
-                var content = new StringContent(JsonConvert.SerializeObject(inspection), Encoding.UTF8, "application/json");
+                var content = new StringContent(JsonConvert.SerializeObject(inspection), System.Text.Encoding.UTF8, "application/json");
 
                 var responseBody = await _client.PostAsync(@"http://localhost:1992/api/v1/inspections", content);
 
@@ -42,11 +42,12 @@ namespace PowerPlantCzarnobyl.WebApi.Client.Clients
             }
         }
 
-        public async Task<List<Inspection>> GetAllInspections(DateTime startDate, DateTime endDate)
+        public async Task<List<Inspection>> GetAllInspections()
         {
             try
             {
-                var responseBody = await _client.GetAsync($@"http://localhost:1992/api/v1/errors/{startDate.ToString("yyyy-MM-ddTHH:mm:ss")}/{endDate.ToString("yyyy-MM-ddTHH:mm:ss")}");
+                var url = $@"http://localhost:1992/api/v1/inspections";
+                var responseBody = await _client.GetAsync(url);
 
                 var result = await responseBody.Content.ReadAsStringAsync();
 

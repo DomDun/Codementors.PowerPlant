@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="CliHelper.cs" />
     <Compile Include="ErrorsHandler.cs" />
-    <Compile Include="InspectionHandler.cs" />
     <Compile Include="LoginHandler.cs" />
     <Compile Include="PowerPlantActionsHandler.cs" />
     <Compile Include="Program.cs" />

@@ -26,7 +26,7 @@ namespace PowerPlantCzarnobyl
             var startDate = _cliHelper.GetDateFromUser("enter start date");
             var endDate = _cliHelper.GetDateFromUser("enter end date");
 
-            var errors = _errorService.GetAllErrorsAsync(startDate, endDate).Result;
+            var errors = _errorService.GetAllErrorsAsync(startDate, endDate);
 
             if (errors != null)
             {
@@ -59,7 +59,7 @@ namespace PowerPlantCzarnobyl
                 fileName += ".json";
             }
 
-            string json = JsonConvert.SerializeObject(await _errorService.GetAllErrorsAsync(startData, endData), Formatting.Indented);
+            string json = JsonConvert.SerializeObject(_errorService.GetAllErrorsAsync(startData, endData), Formatting.Indented);
             File.WriteAllText(fileName, json);
 
             if (!File.Exists(fileName))

@@ -28,7 +28,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Show all errors (yyyy-MM-ddTHH:mm:ss) \n 5.Add Inspection \n 6.Show inspections by selected dates \n 7.Exit \n");
+                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Show all errors (yyyy/MM/dd:GHH:mm) \n 5.anomaly statistics \n 6.Add Inspection \n 7.Show all inspections \n 8.Exit \n");
 
                 switch (operation)
                 {
@@ -45,12 +45,15 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                         _errorsHandler.ShowAllErrors();
                         break;
                     case "5":
-                        _inspectionHandler.AddInspection();
+                        _errorsHandler.ShowErrorsStats();
                         break;
                     case "6":
-                        _inspectionHandler.ShowInspectionsBySelectedDate();
+                        _inspectionHandler.AddInspection(loggedUser);
                         break;
                     case "7":
+                        _inspectionHandler.ShowAllInspections();
+                        break;
+                    case "8":
                         exit = true;
                         break;
                     default:

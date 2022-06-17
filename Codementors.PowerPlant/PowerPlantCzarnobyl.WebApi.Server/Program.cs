@@ -13,6 +13,7 @@ namespace PowerPlantCzarnobyl.WebApi.Server
 
             var recievedDataRepository = new RecievedDataRepository();
             RecievedDataService.Instance = new RecievedDataService(recievedDataRepository);
+            RecievedDataService.Instance.ActualDataSender();
 
             using (WebApp.Start<StartUp>(baseAddress))
             {

@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using PowerPlantCzarnobyl.WebApi.Client.Clients;
+using PowerPlantCzarnobyl.WebApi.Client.Models;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace PowerPlantCzarnobyl.WebApi.Client
 {
@@ -27,7 +29,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             {
                 foreach (var error in errors)
                 {
-                    Console.WriteLine($"Plant name: {error.PlantName}");
+                    Console.WriteLine($"\nPlant name: {error.PlantName}");
                     Console.WriteLine($"Machine name: {error.MachineName}");
                     Console.WriteLine($"Parameter: {error.Parameter}");
                     Console.WriteLine($"Error time: {error.ErrorTime}");
@@ -35,6 +37,19 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                     Console.WriteLine($"Minimal value: {error.MinValue}");
                     Console.WriteLine($"Maximum value: {error.MaxValue}");
                 }
+            }
+        }
+
+        internal async void ShowErrorsStats()
+        {
+            var startDate = _cliHelper.GetDateFromUser("enter start date");
+            var endDate = _cliHelper.GetDateFromUser("enter end date");
+
+            var errors = await _errorWebApiClient.GetAllErrorsInDictionary(startDate, endDate);
+
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"Machine: {error.Key} count of errors: {error.Value}");
             }
         }
     }

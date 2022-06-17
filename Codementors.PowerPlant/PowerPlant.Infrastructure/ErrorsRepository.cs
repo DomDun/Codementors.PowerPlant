@@ -42,7 +42,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
             }
         }
 
-        public async Task<List<Error>> GetAllErrorsAsync(DateTime startData, DateTime endData)
+        public List<Error> GetAllErrorsAsync(DateTime startData, DateTime endData)
         {
             List<Error> errors = new List<Error>();
 
@@ -50,7 +50,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    await connection.OpenAsync();
+                    connection.Open();
 
                     string commandText = @"
 SELECT * FROM [Errors]  
@@ -61,9 +61,9 @@ SELECT * FROM [Errors]
                     command.Parameters.Add("@startData", SqlDbType.DateTime2).Value = startData;
                     command.Parameters.Add("@endData", SqlDbType.DateTime2).Value = endData;
 
-                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                    SqlDataReader dataReader = command.ExecuteReader();
 
-                    while (await dataReader.ReadAsync())
+                    while (dataReader.Read())
                     {
                         Error error;
 

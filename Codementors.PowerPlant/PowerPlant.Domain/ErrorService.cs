@@ -2,11 +2,20 @@
 using PowerPlantCzarnobyl.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public class ErrorService
+    public interface IErrorsService
+    {
+        void Add(Error error);
+        void CheckIfMachinesWorkCorrectly(object sender, PowerPlantDataSetData plant);
+        bool CheckValue(string machineName, string parameter, AssetParameterData value, PowerPlantDataSetData plant, string user);
+        List<Error> GetAllErrorsAsync(DateTime startData, DateTime endData);
+        Dictionary<string, int> GetAllErrorsInDictionaryAsync(DateTime startData, DateTime endData);
+    }
+    public class ErrorService : IErrorsService
     {
         private readonly IErrorsRepository _errorsRepository;
         private readonly IDateProvider _dateProvider;
@@ -78,9 +87,16 @@ namespace PowerPlantCzarnobyl.Domain
             }
         }
 
-        public async Task<List<Error>> GetAllErrorsAsync(DateTime startData, DateTime endData)
+        public List<Error> GetAllErrorsAsync(DateTime startData, DateTime endData)
         {
-            return await _errorsRepository.GetAllErrorsAsync(startData, endData);
+            return  _errorsRepository.GetAllErrorsAsync(startData, endData);
+        }
+
+        public Dictionary<string, int> GetAllErrorsInDictionaryAsync(DateTime startData, DateTime endData)
+        {
+            return _errorsRepository.GetAllErrorsAsync(startData, endData)
+                .GroupBy(x=>x.MachineName)
+                .ToDictionary(x=>x.Key,x=>x.Count());
         }
     }
 }
