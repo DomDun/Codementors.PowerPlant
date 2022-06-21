@@ -1,7 +1,6 @@
 ﻿using PowerPlantCzarnobyl.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain.Interfaces
 {

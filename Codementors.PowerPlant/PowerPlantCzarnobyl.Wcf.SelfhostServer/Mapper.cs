@@ -1,6 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models;
-using System;
 using System.Linq;
 
 namespace PowerPlantCzarnobyl.Wcf.SelfhostServer

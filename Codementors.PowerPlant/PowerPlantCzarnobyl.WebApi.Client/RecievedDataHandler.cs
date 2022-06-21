@@ -1,7 +1,6 @@
 ﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
 using PowerPlantCzarnobyl.WebApi.Client.Models;
 using System;
-using System.Collections.Generic;
 using System.Timers;
 
 namespace PowerPlantCzarnobyl.WebApi.Client

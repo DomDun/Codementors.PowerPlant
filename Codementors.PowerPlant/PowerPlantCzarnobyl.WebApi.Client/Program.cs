@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PowerPlantCzarnobyl.WebApi.Client
+﻿namespace PowerPlantCzarnobyl.WebApi.Client
 {
     public class Program
     {

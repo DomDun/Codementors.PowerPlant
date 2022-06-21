@@ -20,8 +20,8 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
         public void ShowAllErrors()
         {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
+            var startDate = _cliHelper.GetDateFromUser("enter start date (yyyy/MM/dd:GHH:mm)");
+            var endDate = _cliHelper.GetDateFromUser("enter end date (yyyy/MM/dd:GHH:mm)");
 
             var errors = _errorWebApiClient.GetAllErrors(startDate, endDate).Result;
 
@@ -45,8 +45,8 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
         internal async void ShowErrorsStats()
         {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
+            var startDate = _cliHelper.GetDateFromUser("enter start date (yyyy/MM/dd:GHH:mm)");
+            var endDate = _cliHelper.GetDateFromUser("enter end date (yyyy/MM/dd:GHH:mm)");
 
             var errors = await _errorWebApiClient.GetAllErrorsInDictionary(startDate, endDate);
 

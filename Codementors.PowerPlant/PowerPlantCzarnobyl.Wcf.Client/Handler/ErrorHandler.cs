@@ -20,8 +20,8 @@ namespace PowerPlantCzarnobyl.Wcf.Client
         }
         internal void ShowAllErrors()
         {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
+            var startDate = _cliHelper.GetDateFromUser("enter start date (yyyy/MM/dd:GHH:mm)");
+            var endDate = _cliHelper.GetDateFromUser("enter end date (yyyy/MM/dd:GHH:mm)");
 
             var errors = _errorManagementClient.GetAllErrors(startDate, endDate);
 
@@ -128,8 +128,8 @@ namespace PowerPlantCzarnobyl.Wcf.Client
 
         internal void ShowErrorsStats()
         {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
+            var startDate = _cliHelper.GetDateFromUser("enter start date (yyyy/MM/dd:GHH:mm)");
+            var endDate = _cliHelper.GetDateFromUser("enter end date (yyyy/MM/dd:GHH:mm)");
 
             var errors = _errorManagementClient.GetAllErrorsInDictionary(startDate, endDate);
 
