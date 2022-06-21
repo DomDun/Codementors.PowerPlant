@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Infrastructure
 {
@@ -42,7 +41,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
             }
         }
 
-        public List<Error> GetAllErrorsAsync(DateTime startData, DateTime endData)
+        public List<Error> GetAllErrors(DateTime startData, DateTime endData)
         {
             List<Error> errors = new List<Error>();
 

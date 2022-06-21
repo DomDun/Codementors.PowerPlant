@@ -15,6 +15,17 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
     <XsdCodeGenEnabled>True</XsdCodeGenEnabled>
+    <XsdCodeGenSerializerMode>XmlSerializer</XsdCodeGenSerializerMode>
+    <XsdCodeGenReuseTypesFlag>True</XsdCodeGenReuseTypesFlag>
+    <XsdCodeGenReuseTypesMode>All</XsdCodeGenReuseTypesMode>
+    <XsdCodeGenReferences />
+    <XsdCodeGenNamespaceMappings>%2a, PowerPlantCzarnobyl.Wcf.ServiceDefinitions.ContractTypes</XsdCodeGenNamespaceMappings>
+    <XsdCodeGenCollectionTypes>System.Array%3bSystem.Collections.Generic.Dictionary`2</XsdCodeGenCollectionTypes>
+    <XsdCodeGenExcludedTypes />
+    <XsdCodeGenImportXmlTypes>True</XsdCodeGenImportXmlTypes>
+    <XsdCodeGenGenerateSerializableTypes>True</XsdCodeGenGenerateSerializableTypes>
+    <XsdCodeGenGenerateInternalTypes>False</XsdCodeGenGenerateInternalTypes>
+    <XsdCodeGenEnableDataBinding>False</XsdCodeGenEnableDataBinding>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,11 +55,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IErrorManagementService.cs" />
+    <Compile Include="IInspectionManagementService.cs" />
     <Compile Include="IMemberManagementService.cs" />
-    <Compile Include="IRecievedDataManagementService.cs" />
+    <Compile Include="IReceivedDataManagementService.cs" />
     <Compile Include="Models\AssetParameterDataWcf.cs" />
     <Compile Include="Models\CauldronDataWcf.cs" />
-    <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\ErrorWcf.cs" />
+    <Compile Include="Models\InspectionWcf.cs" />
+    <Compile Include="Models\MemberWcf.cs" />
     <Compile Include="Models\PowerPlantDataSetWcf.cs" />
     <Compile Include="Models\TransformatorDataWcf.cs" />
     <Compile Include="Models\TurbineDataWcf.cs" />
@@ -78,7 +93,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{3D9AD99F-2412-4246-B90B-4EAA41C64699}">
         <WcfProjectProperties>
-          <AutoStart>True</AutoStart>
+          <AutoStart>False</AutoStart>
         </WcfProjectProperties>
       </FlavorProperties>
     </VisualStudio>

@@ -63,5 +63,22 @@ namespace PowerPlantCzarnobyl.WebApi.Client.Clients
                 return new Dictionary<string, int>();
             }
         }
+
+        public async void AddError(Error error)
+        {
+            try
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(error), System.Text.Encoding.UTF8, "application/json");
+
+                var responseBody = await _client.PostAsync(@"http://localhost:1992/api/v1/errors", content);
+
+                var result = await responseBody.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+            }
+        }
     }
 }

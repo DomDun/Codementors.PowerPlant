@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="ErrorsRepository.cs" />
     <Compile Include="InspectionRepository.cs" />
-    <Compile Include="RecievedDataRepository.cs" />
+    <Compile Include="ReceivedDataRepository.cs" />
     <Compile Include="MembersRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Sql\02.UpdateDatabase HW5.sql" />

@@ -1,21 +1,23 @@
 ﻿using PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Wcf.ServiceDefinitions
 {
     [ServiceContract]
-    public interface IRecievedDataManagementService
+    public interface IInspectionManagementService
     {
         [OperationContract]
-        void ActualDataSender();
+        Task<bool> AddInspectionAsync(InspectionWcf inspection);
+
         [OperationContract]
-        PowerPlantDataSetWcf GetNewDataSet();
+        List<InspectionWcf> GetAllInspections();
+
         [OperationContract]
-        void RecievedDataSender(object sender, PowerPlantDataSetWcf plant);
+        InspectionWcf GetInspection(int id);
+
+        [OperationContract]
+        bool UpdateInspection(int id, InspectionWcf inspection);
     }
 }

@@ -11,9 +11,9 @@ namespace PowerPlantCzarnobyl.WebApi.Server
         {
             var baseAddress = @"http://localhost:1992/";
 
-            var recievedDataRepository = new RecievedDataRepository();
-            RecievedDataService.Instance = new RecievedDataService(recievedDataRepository);
-            RecievedDataService.Instance.ActualDataSender();
+            var recievedDataRepository = new ReceivedDataRepository();
+            ReceivedDataService.Instance = new ReceivedDataService(recievedDataRepository);
+            ReceivedDataService.Instance.ActualDataSender();
 
             using (WebApp.Start<StartUp>(baseAddress))
             {

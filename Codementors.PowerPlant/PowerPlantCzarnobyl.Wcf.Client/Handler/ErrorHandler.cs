@@ -1,29 +1,29 @@
-﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
-using PowerPlantCzarnobyl.WebApi.Client.Models;
+﻿using PowerPlantCzarnobyl.Wcf.Client.Client;
+using PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models;
 using System;
 using System.Linq;
 
-namespace PowerPlantCzarnobyl.WebApi.Client
+namespace PowerPlantCzarnobyl.Wcf.Client
 {
-    public class ErrorsHandler
+    internal class ErrorHandler
     {
         private readonly CliHelper _cliHelper;
-        private readonly ErrorWebApiClient _errorWebApiClient;
-        private readonly InspectionWebApiClient _inspectionWebApiClient;
+        private readonly ErrorManagementClient _errorManagementClient;
+        private readonly InspectionManagementClient _inspectionManagementClient;
         public string _loggedUser;
-        public ErrorsHandler()
+
+        public ErrorHandler()
         {
             _cliHelper = new CliHelper();
-            _errorWebApiClient = new ErrorWebApiClient();
-            _inspectionWebApiClient = new InspectionWebApiClient();
+            _errorManagementClient = new ErrorManagementClient();
+            _inspectionManagementClient = new InspectionManagementClient();
         }
-
-        public void ShowAllErrors()
+        internal void ShowAllErrors()
         {
             var startDate = _cliHelper.GetDateFromUser("enter start date");
             var endDate = _cliHelper.GetDateFromUser("enter end date");
 
-            var errors = _errorWebApiClient.GetAllErrors(startDate, endDate).Result;
+            var errors = _errorManagementClient.GetAllErrors(startDate, endDate);
 
             if (errors != null)
             {
@@ -35,7 +35,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                     Console.WriteLine($"Error time: {error.ErrorTime}");
                     Console.WriteLine($"Logged member: {error.LoggedUser}");
                     Console.WriteLine($"Minimal value: {error.MinValue}");
-                    Console.WriteLine($"Maximum value: {error.MaxValue}\n");
+                    Console.WriteLine($"Maximum value: {error.MaxValue}");
                 }
             }
 
@@ -43,32 +43,11 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             Console.Clear();
         }
 
-        internal async void ShowErrorsStats()
-        {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
-
-            var errors = await _errorWebApiClient.GetAllErrorsInDictionary(startDate, endDate);
-
-            foreach (var error in errors)
-            {
-                Console.WriteLine($"Machine: {error.Key} count of errors: {error.Value}");
-            }
-
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        public void Add(Error error)
-        {
-            _errorWebApiClient.AddError(error);
-        }
-
-        public void CheckIfMachinesWorkCorrectly(object sender, PowerPlantDataSet plant)
+        internal void CheckIfMachinesWorkCorrectly(object sender, PowerPlantDataSetWcf plant)
         {
             foreach (var cauldron in plant.Cauldrons)
             {
-                if(!CheckIfMachineIsInspected(cauldron.Name))
+                if (!CheckIfMachineIsInspected(cauldron.Name))
                 {
                     CheckValue(cauldron.Name, "WaterPressure", cauldron.WaterPressure, plant, _loggedUser);
                     CheckValue(cauldron.Name, "WaterTemperature", cauldron.WaterTemperature, plant, _loggedUser);
@@ -98,11 +77,11 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             }
         }
 
-        public bool CheckValue(string machineName, string parameter, AssetParameter value, PowerPlantDataSet plant, string user)
+        public bool CheckValue(string machineName, string parameter, AssetParameterDataWcf value, PowerPlantDataSetWcf plant, string user)
         {
             if (value.CurrentValue > value.MaxValue || value.CurrentValue < value.MinValue)
             {
-                Error error = new Error()
+                ErrorWcf error = new ErrorWcf()
                 {
                     PlantName = plant.PlantName,
                     MachineName = machineName,
@@ -127,19 +106,40 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             }
         }
 
+        public void Add(ErrorWcf error)
+        {
+            _errorManagementClient.AddError(error);
+        }
+
         public bool CheckIfMachineIsInspected(string machineName)
         {
-            var inspections = _inspectionWebApiClient.GetAllInspections().Result;
+            var inspections = _inspectionManagementClient.GetAllInspections();
             var cos = inspections
-                .Where(x=>x.MachineName == machineName)
-                .Where(x=>x.State != State.Closed)
+                .Where(x => x.MachineName == machineName)
+                .Where(x => x.State != State.Closed)
                 .ToList();
 
-            if(cos.Count > 0)
+            if (cos.Count > 0)
             {
                 return true;
             }
             else return false;
+        }
+
+        internal void ShowErrorsStats()
+        {
+            var startDate = _cliHelper.GetDateFromUser("enter start date");
+            var endDate = _cliHelper.GetDateFromUser("enter end date");
+
+            var errors = _errorManagementClient.GetAllErrorsInDictionary(startDate, endDate);
+
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"Machine: {error.Key} count of errors: {error.Value}");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }

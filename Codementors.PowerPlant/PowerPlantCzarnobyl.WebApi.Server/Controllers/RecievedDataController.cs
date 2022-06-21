@@ -1,7 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
-using PowerPlantCzarnobyl.Infrastructure;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
@@ -12,9 +10,9 @@ namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
 
         [HttpGet]
         [Route("data")]
-        public async Task<PowerPlantDataSetData> GetDataFromLibrary()
+        public PowerPlantDataSetData GetDataFromLibrary()
         {
-            return RecievedDataService.Instance.NewData;
+            return ReceivedDataService.Instance.NewData;
         }
     }
 }

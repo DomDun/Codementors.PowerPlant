@@ -1,25 +1,26 @@
-﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
-using PowerPlantCzarnobyl.WebApi.Client.Models;
+﻿using PowerPlantCzarnobyl.Wcf.Client.Client;
+using PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace PowerPlantCzarnobyl.WebApi.Client
+namespace PowerPlantCzarnobyl.Wcf.Client.Handler
 {
     public class InspectionHandler
     {
         private readonly CliHelper _cliHelper;
-        private readonly InspectionWebApiClient _inspectionWebApiClient;
-        private readonly RecievedDataWebApiClient _recievedDataWebApiClient;
+        private readonly InspectionManagementClient _inspectionManagementClient;
+        private readonly ReceivedDataManagementClient _receivedDataManagementClient;
 
         public InspectionHandler()
         {
             _cliHelper = new CliHelper();
-            _inspectionWebApiClient = new InspectionWebApiClient();
-            _recievedDataWebApiClient = new RecievedDataWebApiClient();
+            _inspectionManagementClient = new InspectionManagementClient();
+            _receivedDataManagementClient = new ReceivedDataManagementClient();
         }
 
-        public bool AddInspection(MemberWebApi loggedUser)
+        public async Task<bool> AddInspection(MemberWcf loggedUser)
         {
             Console.Clear();
 
@@ -29,17 +30,17 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 return false;
             }
 
-            Inspection newInspection = new Inspection();
+            InspectionWcf newInspection = new InspectionWcf();
 
             newInspection.CreateDate = DateTime.Now;
 
-            var machineNameFromUser = CheckIfMemberCanAddNewInspection();
+            var machineNameFromUser = CheckIfMemberCanOpenNewInspectionForThisMachine();
             newInspection.MachineName = machineNameFromUser;
 
             newInspection.State = State.Open;
 
 
-            bool success = _inspectionWebApiClient.AddInspection(newInspection).Result;
+            bool success = await _inspectionManagementClient.AddInspectionAsync(newInspection);
 
             string message = success
                 ? "\ninspection added successfully\n"
@@ -49,7 +50,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             return success;
         }
 
-        private string CheckIfMemberCanAddNewInspection()
+        private string CheckIfMemberCanOpenNewInspectionForThisMachine()
         {
             List<string> machines = CreateMachinesList();
 
@@ -62,7 +63,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
                 if (machines.Contains(machineName))
                 {
-                    var inspections = _inspectionWebApiClient.GetAllInspections().Result;
+                    var inspections = _inspectionManagementClient.GetAllInspections();
                     Dictionary<string, DateTime?> inspectionsInSystem = new Dictionary<string, DateTime?>();
 
                     foreach (var inspection in inspections)
@@ -92,62 +93,13 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 }
             } while (!machineNameIsCorrect);
 
+
             return machineName;
-        }
-
-        public bool AssignEngineerToInspection(MemberWebApi loggedUser)
-        {
-            Console.Clear();
-
-            if (loggedUser.Role != "Engineer")
-            {
-                Console.WriteLine("\nYou are not Engineer! Go to Your part of work!!!\n");
-                return false;
-            }
-            ShowAllInspections();
-
-            var id = _cliHelper.GetIntFromUser("Type Id of inspection You want to be assigned");
-            Inspection inspection = GetInspection(id);
-
-            inspection.UpdateDate = GetUpdateDate(inspection.CreateDate);
-            inspection.Comments = $"Comment by {loggedUser.Login}:    " + _cliHelper.GetStringFromUser("Type Your comment here");
-            inspection.State = State.InProgress;
-            inspection.Engineer = loggedUser.Login;
-
-            bool success = _inspectionWebApiClient.UpdateInspection(id, inspection);
-
-            string message = success
-                ? "\nInspection assigned successfully\n"
-                : "\nError\n";
-
-            Console.WriteLine(message);
-
-            return success;
-        }
-
-        private Inspection GetInspection(int id)
-        {
-            return _inspectionWebApiClient.GetInspection(id).Result;
-        }
-
-        private DateTime? GetUpdateDate(DateTime createDate)
-        {
-            DateTime? updateDate = null;
-            do
-            {
-                updateDate = _cliHelper.GetDateFromUser("Type update date (yyyy/MM/dd:GHH:mm)");
-                if (updateDate < createDate)
-                {
-                    Console.WriteLine("update date have to be later or same as create date");
-                }
-            } while (updateDate < createDate);
-
-            return updateDate;
         }
 
         private List<string> CreateMachinesList()
         {
-            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
+            PowerPlantDataSetWcf plant = _receivedDataManagementClient.GetNewDataSet();
             List<string> machines = new List<string>();
 
             foreach (var item in plant.Transformators)
@@ -172,7 +124,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
         public void ShowAllInspections()
         {
             Console.Clear();
-            var inspections = _inspectionWebApiClient.GetAllInspections().Result;
+            var inspections = _inspectionManagementClient.GetAllInspections();
 
             if (inspections != null)
             {
@@ -190,11 +142,11 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             }
         }
 
-        public List<Inspection> GetAssignedInspections(MemberWebApi loggedUser)
+        private List<InspectionWcf> GetAssignedInspections(MemberWcf loggedUser)
         {
             Console.Clear();
-            var inspections = _inspectionWebApiClient.GetAllInspections().Result;
-            List<Inspection> result = new List<Inspection>();
+            var inspections = _inspectionManagementClient.GetAllInspections();
+            List<InspectionWcf> result = new List<InspectionWcf>();
             if (loggedUser.Role == "Engineer")
             {
                 result = inspections
@@ -211,12 +163,12 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             }
         }
 
-        public void ShowAssignedInspections(MemberWebApi loggedUser)
+        public void ShowAssignedInspections(MemberWcf loggedUser)
         {
             Console.Clear();
             var inspections = GetAssignedInspections(loggedUser);
 
-            foreach(var inspection in inspections)
+            foreach (var inspection in inspections)
             {
                 Console.WriteLine($"\nInspection Id: {inspection.Id}");
                 Console.WriteLine($"Create date: {inspection.CreateDate}");
@@ -227,6 +179,55 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 Console.WriteLine($"State: {inspection.State}");
                 Console.WriteLine($"Processing Engineer: {inspection.Engineer}\n");
             }
+        }
+        public bool AssignEngineerToInspection(MemberWcf loggedUser)
+        {
+            Console.Clear();
+
+            if (loggedUser.Role != "Engineer")
+            {
+                Console.WriteLine("\nYou are not Engineer! Go to Your part of work!!!\n");
+                return false;
+            }
+            ShowAllInspections();
+
+            var id = _cliHelper.GetIntFromUser("Type Id of inspection You want to be assigned");
+            InspectionWcf inspection = GetInspection(id);
+
+            inspection.UpdateDate = GetUpdateDate(inspection.CreateDate);
+            inspection.Comments = $"Comment by {loggedUser.Login}:    " + _cliHelper.GetStringFromUser("Type Your comment here");
+            inspection.State = State.InProgress;
+            inspection.Engineer = loggedUser.Login;
+
+            bool success = _inspectionManagementClient.UpdateInspection(id, inspection);
+
+            string message = success
+                ? "\nInspection assigned successfully\n"
+                : "\nError\n";
+
+            Console.WriteLine(message);
+
+            return success;
+        }
+
+        private InspectionWcf GetInspection(int id)
+        {
+            return _inspectionManagementClient.GetInspection(id);
+        }
+
+        private DateTime? GetUpdateDate(DateTime createDate)
+        {
+            DateTime? updateDate = null;
+            do
+            {
+                updateDate = _cliHelper.GetDateFromUser("Type update date (yyyy/MM/dd:GHH:mm)");
+                if (updateDate < createDate)
+                {
+                    Console.WriteLine("update date have to be later or same as create date");
+                }
+            } while (updateDate < createDate);
+
+            return updateDate;
         }
     }
 }

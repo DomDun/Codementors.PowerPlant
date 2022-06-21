@@ -1,6 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,8 +7,10 @@ namespace PowerPlantCzarnobyl.Domain
 {
     public interface IInspectionService
     {
-        Task<bool> AddInspection(Inspection inspection);
-        Task<List<Inspection>> GetAllInspections();
+        Task<bool> AddInspectionAsync(Inspection inspection);
+        List<Inspection> GetAllInspections();
+        Inspection GetInspection(int id);
+        bool UpdateInspection(int id, Inspection inspection);
     }
 
     public class InspectionService : IInspectionService
@@ -22,14 +23,24 @@ namespace PowerPlantCzarnobyl.Domain
             _inspectionRepository = inspectionRepository;
         }
 
-        public async Task<bool> AddInspection(Inspection inspection)
+        public async Task<bool> AddInspectionAsync(Inspection inspection)
         {
-            return await _inspectionRepository.AddInspection(inspection);
+            return await _inspectionRepository.AddInspectionAsync(inspection);
         }
 
-        public async Task<List<Inspection>> GetAllInspections()
+        public List<Inspection> GetAllInspections()
         {
-            return await _inspectionRepository.GetAllInspectionsAsync();
+            return _inspectionRepository.GetAllInspections();
+        }
+
+        public Inspection GetInspection(int id)
+        {
+            return _inspectionRepository.GetInspection(id);
+        }
+
+        public bool UpdateInspection(int id, Inspection inspection)
+        {
+            return _inspectionRepository.UpdateInspection(id, inspection);
         }
     }
 }

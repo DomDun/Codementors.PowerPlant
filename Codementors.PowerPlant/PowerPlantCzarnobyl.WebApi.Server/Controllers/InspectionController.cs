@@ -1,7 +1,6 @@
 ﻿using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -25,14 +24,28 @@ namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
         [Route("")]
         public async Task<bool> AddInspection([FromBody] Inspection inspection)
         {
-            return await _inspectionService.AddInspection(inspection);
+            return await _inspectionService.AddInspectionAsync(inspection);
         }
 
         [HttpGet]
         [Route("")]
-        public async Task<List<Inspection>> GetAllInspectionsAsync()
+        public List<Inspection> GetAllInspectionsAsync()
         {
-            return await _inspectionService.GetAllInspections();
+            return _inspectionService.GetAllInspections();
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public Inspection GetInspectionAsync(int id)
+        {
+            return _inspectionService.GetInspection(id);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public bool UpdateInspection([FromUri] int id, [FromBody] Inspection inspection)
+        {
+            return _inspectionService.UpdateInspection(id, inspection);
         }
     }
 }

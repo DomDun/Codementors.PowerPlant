@@ -8,6 +8,6 @@ namespace PowerPlantCzarnobyl.Domain.Interfaces
     public interface IErrorsRepository
     {
         void AddError(Error error);
-        List<Error> GetAllErrorsAsync(DateTime startData, DateTime endData);
+        List<Error> GetAllErrors(DateTime startData, DateTime endData);
     }
 }

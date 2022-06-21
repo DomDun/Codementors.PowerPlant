@@ -2,7 +2,6 @@
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
 using PowerPlantCzarnobyl.WebApi.Server.Models;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
@@ -26,7 +25,7 @@ namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
 
         [HttpPost]
         [Route("credentials")]
-        public async Task<bool> Login([FromBody] MemberCredentials MemberCredentials)
+        public bool Login([FromBody] MemberCredentials MemberCredentials)
         {
             return _memberService.CheckUserCredentials(MemberCredentials.Login, MemberCredentials.Password);
         }

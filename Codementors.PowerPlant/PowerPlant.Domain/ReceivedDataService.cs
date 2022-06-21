@@ -11,9 +11,9 @@ namespace PowerPlantCzarnobyl.Domain
         void RecievedDataSender(object sender, PowerPlantDataSetData plant);
     }
 
-    public class RecievedDataService : IRecievedDataService
+    public class ReceivedDataService : IRecievedDataService
     {
-        public static RecievedDataService Instance { get; set; }
+        public static ReceivedDataService Instance { get; set; }
 
         public event EventHandler<PowerPlantDataSetData> OnRecieveData = null;
 
@@ -21,7 +21,7 @@ namespace PowerPlantCzarnobyl.Domain
 
         public PowerPlantDataSetData NewData { get; set; }
 
-        public RecievedDataService(IRecievedDataRepository recievedDataRepository)
+        public ReceivedDataService(IRecievedDataRepository recievedDataRepository)
         {
             _recievedDataRepository = recievedDataRepository;
         }

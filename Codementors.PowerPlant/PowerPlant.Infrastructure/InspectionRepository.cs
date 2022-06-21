@@ -13,7 +13,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["PowerPlantDBConnectionString"].ConnectionString;
 
-        public async Task<bool> AddInspection(Inspection inspection)
+        public async Task<bool> AddInspectionAsync(Inspection inspection)
         {
             try
             {
@@ -21,8 +21,8 @@ namespace PowerPlantCzarnobyl.Infrastructure
                 {
                     await connection.OpenAsync();
 
-                    string commandSql = "INSERT INTO [Inspections] ([CreateDate], [Name], [State]) " +
-                        "VALUES (@CreateDate, @Name, @State)";
+                    string commandSql = "INSERT INTO [Inspections] ([CreateDate], [Name], [State], [Engineer]) " +
+                        "VALUES (@CreateDate, @Name, @State, @Engineer)";
                     SqlCommand command = new SqlCommand(commandSql, connection);
                     command.Parameters.Add("@CreateDate", SqlDbType.DateTime2).Value = inspection.CreateDate;
                     command.Parameters.Add("@UpdateDate", SqlDbType.DateTime2).Value = inspection.UpdateDate == null
@@ -36,6 +36,9 @@ namespace PowerPlantCzarnobyl.Infrastructure
                         ? (object)DBNull.Value
                         : inspection.Comments;
                     command.Parameters.Add("@State", SqlDbType.NVarChar, 255).Value = inspection.State;
+                    command.Parameters.Add("@Comments", SqlDbType.NVarChar, 255).Value = inspection.Engineer == null
+                        ? (object)DBNull.Value
+                        : inspection.Engineer;
 
                     await command.ExecuteNonQueryAsync();
 
@@ -49,7 +52,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
             }
         }
 
-        public async Task<List<Inspection>> GetAllInspectionsAsync()
+        public List<Inspection> GetAllInspections()
         {
             List<Inspection> inspections = new List<Inspection>();
 
@@ -57,15 +60,16 @@ namespace PowerPlantCzarnobyl.Infrastructure
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    await connection.OpenAsync();
+                    connection.Open();
 
                     string commandText = @"SELECT * FROM [Inspections]";
                     SqlCommand command = new SqlCommand(commandText, connection);
-                    SqlDataReader dataReader = await command.ExecuteReaderAsync();
+                    SqlDataReader dataReader = command.ExecuteReader();
 
-                    while (await dataReader.ReadAsync())
+                    while (dataReader.Read())
                     {
                         Inspection inspection = new Inspection();
+                        inspection.Id = int.Parse(dataReader["Id"].ToString());
                         inspection.CreateDate = DateTime.Parse(dataReader["CreateDate"].ToString());
                         inspection.UpdateDate = dataReader["UpdateDate"] == DBNull.Value
                                     ? null
@@ -77,7 +81,10 @@ namespace PowerPlantCzarnobyl.Infrastructure
                         inspection.Comments = dataReader["Comments"] == DBNull.Value
                                     ? null
                                     : dataReader["Comments"].ToString();
-                        inspection.State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : inspection.State; 
+                        inspection.State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : inspection.State;
+                        inspection.Engineer = dataReader["Engineer"] == DBNull.Value
+                                    ? null
+                                    : dataReader["Engineer"].ToString();
 
                         inspections.Add(inspection);
                     }
@@ -90,6 +97,94 @@ namespace PowerPlantCzarnobyl.Infrastructure
             }
 
             return inspections;
+        }
+
+        public Inspection GetInspection(int id)
+        {
+            Inspection inspection = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = $"SELECT * FROM [Inspections] WHERE [Id] = {id}";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    dataReader.Read();
+
+                    inspection = new Inspection
+                    {
+                        Id = int.Parse(dataReader["Id"].ToString()),
+                        CreateDate = DateTime.Parse(dataReader["CreateDate"].ToString()),
+                        UpdateDate = dataReader["UpdateDate"] == DBNull.Value
+                                    ? null
+                                    : (DateTime?)DateTime.Parse(dataReader["UpdateDate"].ToString()),
+                        EndDate = dataReader["EndDate"] == DBNull.Value
+                                    ? null
+                                    : (DateTime?)DateTime.Parse(dataReader["EndDate"].ToString()),
+                        MachineName = dataReader["Name"].ToString(),
+                        Comments = dataReader["Comments"] == DBNull.Value
+                                    ? null
+                                    : dataReader["Comments"].ToString(),
+                        State = Enum.TryParse(dataReader["State"].ToString(), out State cos) ? cos : inspection.State,
+                        Engineer = dataReader["Engineer"] == DBNull.Value
+                                    ? null
+                                    : dataReader["Engineer"].ToString(),
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                inspection = null;
+            }
+
+            return inspection;
+        }
+
+        public bool UpdateInspection(int id, Inspection inspection)
+        {
+            bool success;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = $@"
+UPDATE [Inspections] SET 
+[UpdateDate] = @UpdateDate,
+[Comments] = @Comments,
+[State] = @State,
+[Engineer] = @Engineer 
+WHERE ID = {id}";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    command.Parameters.Add("@UpdateDate", SqlDbType.DateTime2).Value = inspection.UpdateDate;
+                    command.Parameters.Add("@Comments", SqlDbType.NVarChar, 255).Value = inspection.Comments;
+                    command.Parameters.Add("@State", SqlDbType.NVarChar, 255).Value = inspection.State;
+                    command.Parameters.Add("@Engineer", SqlDbType.NVarChar, 255).Value = inspection.Engineer;
+
+                    int rowsAffected =  command.ExecuteNonQuery();
+
+                    success = rowsAffected == 1;
+                    if (!success)
+                    {
+                        Console.WriteLine("Error when adding inspection");
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message, "Error when updating author with Id {Id}", inspection.Id);
+                success = false;
+            }
+
+            return success;
         }
     }
 }

@@ -9,16 +9,33 @@ namespace PowerPlantCzarnobyl.WebApi.Client
     internal class RecievedDataHandler
     {
         private readonly RecievedDataWebApiClient _recievedDataWebApiClient;
+        private readonly ErrorsHandler _errorsHandler;
 
         public RecievedDataHandler()
         {
             _recievedDataWebApiClient = new RecievedDataWebApiClient();
+            _errorsHandler = new ErrorsHandler();
+        }
+
+        public void StartWork()
+        {
+            var timer = new Timer(1000);
+            timer.Elapsed += SearchForErrorInDataFromPlant;
+            timer.Interval = 1000;
+            timer.Start();
+        }
+
+        public void SearchForErrorInDataFromPlant(object sender, ElapsedEventArgs cos)
+        {
+            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
+
+            _errorsHandler.CheckIfMachinesWorkCorrectly(sender, plant);
         }
 
         public void CurrentWorkStatus()
         {
             var timer = new Timer(1000);
-            timer.Elapsed += RecieveDataFromService;
+            timer.Elapsed += ShowDataFromPlant;
             timer.Interval = 1000;
             timer.Start();
 
@@ -33,7 +50,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             return;
         }
 
-        public void RecieveDataFromService(object sender, ElapsedEventArgs cos)
+        public void ShowDataFromPlant(object sender, ElapsedEventArgs cos)
         {
             PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
 

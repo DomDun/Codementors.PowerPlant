@@ -3,7 +3,7 @@
 namespace PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models
 {
     [DataContract]
-    public class Member
+    public class MemberWcf
     {
         [DataMember]
         public string Login;

@@ -58,7 +58,6 @@
     <Compile Include="Models\AssetParameter.cs" />
     <Compile Include="Models\Cauldron.cs" />
     <Compile Include="Models\Error.cs" />
-    <Compile Include="Models\ErrorStatistics.cs" />
     <Compile Include="Models\Inspection.cs" />
     <Compile Include="Models\MemberWebApi.cs" />
     <Compile Include="Models\MemberCredentials.cs" />

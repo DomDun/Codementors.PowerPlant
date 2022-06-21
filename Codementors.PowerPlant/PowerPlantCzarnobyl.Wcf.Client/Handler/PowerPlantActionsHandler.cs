@@ -1,30 +1,30 @@
-﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
+﻿using PowerPlantCzarnobyl.Wcf.Client.Handler;
 using System;
 
-namespace PowerPlantCzarnobyl.WebApi.Client
+namespace PowerPlantCzarnobyl.Wcf.Client
 {
     public class PowerPlantActionsHandler
     {
         private readonly CliHelper _cliHelper;
-        private readonly MemberWebApiClient _memberWebApiClient;
+        private readonly MemberManagementClient _memberManagementClient;
         private readonly MemberHandler _memberHandler;
-        private readonly RecievedDataHandler _recievedHandler;
-        private readonly ErrorsHandler _errorsHandler;
+        private readonly ErrorHandler _errorHandler;
         private readonly InspectionHandler _inspectionHandler;
+        private readonly RecievedDataHandler _recievedDataHandler;
 
         public PowerPlantActionsHandler()
         {
             _cliHelper = new CliHelper();
-            _memberWebApiClient = new MemberWebApiClient();
+            _memberManagementClient = new MemberManagementClient();
             _memberHandler = new MemberHandler();
-            _errorsHandler = new ErrorsHandler();
+            _errorHandler = new ErrorHandler();
             _inspectionHandler = new InspectionHandler();
-            _recievedHandler = new RecievedDataHandler();
+            _recievedDataHandler = new RecievedDataHandler();
         }
         public void ProgramLoop(string loggedMember)
         {
             bool exit = false;
-            var loggedUser = _memberWebApiClient.CheckMemberRole(loggedMember).Result;
+            var loggedUser = _memberManagementClient.CheckMemberRole(loggedMember);
 
             while (!exit)
             {
@@ -33,7 +33,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 switch (operation)
                 {
                     case "1":
-                        _recievedHandler.CurrentWorkStatus();
+                        _recievedDataHandler.CurrentWorkStatus();
                         break;
                     case "2":
                         _memberHandler.AddMember(loggedUser);
@@ -42,10 +42,10 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                         _memberHandler.DeleteMember(loggedUser);
                         break;
                     case "4":
-                        _errorsHandler.ShowAllErrors();
+                        _errorHandler.ShowAllErrors();
                         break;
                     case "5":
-                        _errorsHandler.ShowErrorsStats();
+                        _errorHandler.ShowErrorsStats();
                         break;
                     case "6":
                         _inspectionHandler.AddInspection(loggedUser);
@@ -68,5 +68,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                 }
             }
         }
+
+        
     }
 }

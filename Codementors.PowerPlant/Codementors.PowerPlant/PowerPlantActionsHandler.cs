@@ -10,23 +10,21 @@ namespace PowerPlantCzarnobyl
     {
         private readonly CliHelper _cliHelper;
         private readonly LoginHandler _loginHandler;
-        private readonly RecievedDataService _recievedDataService;
+        private readonly ReceivedDataService _recievedDataService;
         private readonly MemberService _memberService;
         private readonly ConsoleManager _consoleManager;
-        //private readonly InspectionHandler _inspectionHandler;
         private readonly ErrorsHandler _errorsHandler;
 
         public PowerPlantActionsHandler()
         {
             _cliHelper = new CliHelper();
 
-            var recievedDataRepository = new RecievedDataRepository();
+            var recievedDataRepository = new ReceivedDataRepository();
             var membersRepository = new MembersRepository();
 
-            //_inspectionHandler = new InspectionHandler();
             _errorsHandler = new ErrorsHandler();
             _consoleManager = new ConsoleManager();
-            _recievedDataService = new RecievedDataService(recievedDataRepository);
+            _recievedDataService = new ReceivedDataService(recievedDataRepository);
             _memberService = new MemberService(membersRepository);
             _loginHandler = new LoginHandler(_memberService, _consoleManager, _cliHelper);
         }

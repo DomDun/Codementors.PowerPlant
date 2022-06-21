@@ -7,7 +7,9 @@ namespace PowerPlantCzarnobyl.Domain.Interfaces
 {
     public interface IInspectionRepository
     {
-        Task<bool> AddInspection(Inspection inspection);
-        Task<List<Inspection>> GetAllInspectionsAsync();
+        Task<bool> AddInspectionAsync(Inspection inspection);
+        List<Inspection> GetAllInspections();
+        Inspection GetInspection(int id);
+        bool UpdateInspection(int id, Inspection inspection);
     }
 }

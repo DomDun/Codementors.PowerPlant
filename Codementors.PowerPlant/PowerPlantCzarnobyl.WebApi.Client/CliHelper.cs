@@ -58,5 +58,24 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
             return data;
         }
+
+        public int GetIntFromUser(string message)
+        {
+            int result = 0;
+            bool success = false;
+
+            while (!success)
+            {
+                string text = GetStringFromUser(message);
+                success = int.TryParse(text, out result);
+
+                if (!success)
+                {
+                    Console.WriteLine("Not a number. Try again...");
+                }
+            }
+
+            return result;
+        }
     }
 }

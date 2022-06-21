@@ -43,9 +43,9 @@ namespace PowerPlantCzarnobyl.Wcf.Client
             return result;
         }
 
-        public Member GetMemberFromAdmin()
+        public MemberWcf GetMemberFromAdmin()
         {
-            Member member = new Member
+            MemberWcf member = new MemberWcf
             {
                 Login = GetStringFromUser("Add login of new member"),
                 Password = GetStringFromUser("Add pasword"),
@@ -55,11 +55,11 @@ namespace PowerPlantCzarnobyl.Wcf.Client
             do
             {
                 member.Role = GetStringFromUser("Add role for new member");
-                if (member.Role != "Admin" && member.Role != "User")
+                if (member.Role != "Admin" && member.Role != "User" && member.Role != "Engineer")
                 {
-                    Console.WriteLine("You have to type Admin or User! try again");
+                    Console.WriteLine("You have to type Admin or User or Engineer! try again");
                 }
-            } while (member.Role != "Admin" && member.Role != "User");
+            } while (member.Role != "Admin" && member.Role != "User" && member.Role != "Engineer");
 
             return member;
         }

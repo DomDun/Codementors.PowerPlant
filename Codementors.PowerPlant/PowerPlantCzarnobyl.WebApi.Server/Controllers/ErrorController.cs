@@ -1,10 +1,8 @@
 ﻿using PowerPlantCzarnobyl.Domain;
-using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
 using PowerPlantCzarnobyl.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
@@ -26,14 +24,21 @@ namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
         [Route("errors/{startDate}/{endDate}")]
         public List<Error> GetAllErrorsAsync(DateTime startDate, DateTime endDate)
         {
-            return _errorService.GetAllErrorsAsync(startDate, endDate);
+            return _errorService.GetAllErrors(startDate, endDate);
         }
 
         [HttpGet]
         [Route("errorsToDict/{startDate}/{endDate}")]
         public Dictionary<string, int> GetAllErrorsInDictionaryAsync(DateTime startDate, DateTime endDate)
         {
-            return _errorService.GetAllErrorsInDictionaryAsync(startDate, endDate);
+            return _errorService.GetAllErrorsInDictionary(startDate, endDate);
+        }
+
+        [HttpPost]
+        [Route("")]
+        public void AddError([FromBody] Error error)
+        {
+            _errorService.AddError(error);
         }
     }
 }

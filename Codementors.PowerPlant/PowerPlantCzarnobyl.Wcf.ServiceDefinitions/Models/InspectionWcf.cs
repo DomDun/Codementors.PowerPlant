@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace PowerPlantCzarnobyl.WebApi.Client.Models
+namespace PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models
 {
-    public class Inspection
+    public class InspectionWcf
     {
-        public int Id { get; set; }
+        public int Id;
         public DateTime CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public DateTime? EndDate { get; set; }

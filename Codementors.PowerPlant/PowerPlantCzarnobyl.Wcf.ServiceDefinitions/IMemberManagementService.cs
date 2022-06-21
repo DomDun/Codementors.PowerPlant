@@ -1,6 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Wcf.ServiceDefinitions.Models;
 using System.ServiceModel;
-using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Wcf.ServiceDefinitions
 {
@@ -8,14 +7,15 @@ namespace PowerPlantCzarnobyl.Wcf.ServiceDefinitions
     public interface IMemberManagementService
     {
         [OperationContract]
-        void AddMember(Member member);
+        bool AddMember(MemberWcf member);
 
         [OperationContract]
-        Member CheckMemberRoleAsync(string login);
+        MemberWcf CheckMemberRole(string login);
 
         [OperationContract]
-        bool CheckMemberCredentialsAsync(string username, string password);
-        
-        //todo: dodać usuwanie użytkownika
+        bool CheckMemberCredentials(string username, string password);
+
+        [OperationContract]
+        bool DeleteMember(string member);
     }
 }

@@ -1,11 +1,9 @@
-﻿using PowerPlantCzarnobyl.Wcf.ServiceDefinitions;
+﻿using PowerPlantCzarnobyl.Domain;
+using PowerPlantCzarnobyl.Infrastructure;
+using PowerPlantCzarnobyl.Wcf.ServiceDefinitions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Wcf.SelfhostServer
 {
@@ -22,6 +20,13 @@ namespace PowerPlantCzarnobyl.Wcf.SelfhostServer
             //Add a service endpoint
             var binding = new WSHttpBinding();
             host.AddServiceEndpoint(typeof(IMemberManagementService), binding, "Members");
+            host.AddServiceEndpoint(typeof(IReceivedDataManagementService), binding, "ReceivedData");
+            host.AddServiceEndpoint(typeof(IErrorManagementService), binding, "Errors");
+            host.AddServiceEndpoint(typeof(IInspectionManagementService), binding, "Inspections");
+
+            var receivedDataRepository = new ReceivedDataRepository();
+            ReceivedDataService.Instance = new ReceivedDataService(receivedDataRepository);
+            ReceivedDataService.Instance.ActualDataSender();
 
             //Enable metadata exchange
             var smb = new ServiceMetadataBehavior();
