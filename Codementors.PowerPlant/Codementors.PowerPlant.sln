@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlantCzarnobyl.Wcf.Sel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlantCzarnobyl.Wcf.Client", "PowerPlantCzarnobyl.Wcf.Client\PowerPlantCzarnobyl.Wcf.Client.csproj", "{A651405F-817C-4EA4-A8D4-F0AE73D5D18E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVC", "MVC", "{661D892C-667F-42F6-BD7A-DCED391A2760}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
