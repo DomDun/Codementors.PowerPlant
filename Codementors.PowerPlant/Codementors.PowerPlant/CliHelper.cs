@@ -74,7 +74,7 @@ namespace PowerPlantCzarnobyl
                 CreateDate = DateTime.Now,
                 UpdateDate = DateTime.Now,
                 EndDate = DateTime.Now,
-                Name = string.Empty,
+                MachineName = string.Empty,
                 Comments = string.Empty,
             };
             return inspection;

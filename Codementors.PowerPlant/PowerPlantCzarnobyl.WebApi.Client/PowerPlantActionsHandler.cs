@@ -28,7 +28,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
             while (!exit)
             {
-                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Produced energy \n 5.Export file with errors \n 6.Show all errors \n 7.Add Inspection \n 8.Show inspections by selected dates \n 9.Exit \n");
+                string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Show all errors (yyyy/MM/dd:GHH:mm) \n 5.anomaly statistics \n 6.Add Inspection \n 7.Show all inspections \n 8.Assign Engineer to inspection \n 9.Show assigned inspections \n 10.Exit \n");
 
                 switch (operation)
                 {
@@ -42,21 +42,24 @@ namespace PowerPlantCzarnobyl.WebApi.Client
                         _memberHandler.DeleteMember(loggedUser);
                         break;
                     case "4":
-                        _recievedHandler.ShowProducedPower();
-                        break;
-                    case "5":
-                        _errorsHandler.ExportErrorsListToJson();
-                        break;
-                    case "6":
                         _errorsHandler.ShowAllErrors();
                         break;
+                    case "5":
+                        _errorsHandler.ShowErrorsStats();
+                        break;
+                    case "6":
+                        _inspectionHandler.AddInspection(loggedUser);
+                        break;
                     case "7":
-                        _inspectionHandler.AddInspection();
+                        _inspectionHandler.ShowAllInspections();
                         break;
                     case "8":
-                        _inspectionHandler.ShowInspectionsBySelectedDate();
+                        _inspectionHandler.AssignEngineerToInspection(loggedUser);
                         break;
                     case "9":
+                        _inspectionHandler.ShowAssignedInspections(loggedUser);
+                        break;
+                    case "10":
                         exit = true;
                         break;
                     default:

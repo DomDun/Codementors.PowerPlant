@@ -1,6 +1,8 @@
 ﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
 using PowerPlantCzarnobyl.WebApi.Client.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PowerPlantCzarnobyl.WebApi.Client
 {
@@ -8,20 +10,36 @@ namespace PowerPlantCzarnobyl.WebApi.Client
     {
         private readonly CliHelper _cliHelper;
         private readonly InspectionWebApiClient _inspectionWebApiClient;
+        private readonly RecievedDataWebApiClient _recievedDataWebApiClient;
 
         public InspectionHandler()
         {
             _cliHelper = new CliHelper();
             _inspectionWebApiClient = new InspectionWebApiClient();
+            _recievedDataWebApiClient = new RecievedDataWebApiClient();
         }
 
-        public bool AddInspection()
+        public bool AddInspection(MemberWebApi loggedUser)
         {
             Console.Clear();
 
-            Inspection inspection = _cliHelper.GetInspectionFromUser();
+            if (loggedUser.Role == "Engineer")
+            {
+                Console.WriteLine("\nYou are not authorized to add new inspection. Go to Your CEO for a promotion :)\n");
+                return false;
+            }
 
-            bool success = _inspectionWebApiClient.AddInspection(inspection).Result;
+            Inspection newInspection = new Inspection();
+
+            newInspection.CreateDate = DateTime.Now;
+
+            var machineNameFromUser = CheckIfMemberCanAddNewInspection();
+            newInspection.MachineName = machineNameFromUser;
+
+            newInspection.State = State.Open;
+
+
+            bool success = _inspectionWebApiClient.AddInspection(newInspection).Result;
 
             string message = success
                 ? "\ninspection added successfully\n"
@@ -31,23 +49,183 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             return success;
         }
 
-        public void ShowInspectionsBySelectedDate()
+        private string CheckIfMemberCanAddNewInspection()
         {
-            var startDate = _cliHelper.GetDateFromUser("enter start date");
-            var endDate = _cliHelper.GetDateFromUser("enter end date");
+            List<string> machines = CreateMachinesList();
 
-            var inspections = _inspectionWebApiClient.GetAllInspections(startDate, endDate).Result;
+            string machineName;
+            var machineNameIsCorrect = false;
+
+            do
+            {
+                machineName = _cliHelper.GetStringFromUser("give me machine name You want to check");
+
+                if (machines.Contains(machineName))
+                {
+                    var inspections = _inspectionWebApiClient.GetAllInspections().Result;
+                    Dictionary<string, DateTime?> inspectionsInSystem = new Dictionary<string, DateTime?>();
+
+                    foreach (var inspection in inspections)
+                    {
+                        inspectionsInSystem.Add(inspection.MachineName, inspection.EndDate);
+                    }
+
+                    if (inspectionsInSystem.ContainsKey(machineName))
+                    {
+                        if (inspectionsInSystem.ContainsValue(null))
+                        {
+                            Console.WriteLine("There is open inspection for this machine in system, You can't open another one");
+                        }
+                        else
+                        {
+                            machineNameIsCorrect = true;
+                        }
+                    }
+                    else
+                    {
+                        machineNameIsCorrect = true;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("We don't have that machine, please type machine name again");
+                }
+            } while (!machineNameIsCorrect);
+
+            return machineName;
+        }
+
+        public bool AssignEngineerToInspection(MemberWebApi loggedUser)
+        {
+            Console.Clear();
+
+            if (loggedUser.Role != "Engineer")
+            {
+                Console.WriteLine("\nYou are not Engineer! Go to Your part of work!!!\n");
+                return false;
+            }
+            ShowAllInspections();
+
+            var id = _cliHelper.GetIntFromUser("Type Id of inspection You want to be assigned");
+            Inspection inspection = GetInspection(id);
+
+            inspection.UpdateDate = GetUpdateDate(inspection.CreateDate);
+            inspection.Comments = $"Comment by {loggedUser.Login}:    " + _cliHelper.GetStringFromUser("Type Your comment here");
+            inspection.State = State.InProgress;
+            inspection.Engineer = loggedUser.Login;
+
+            bool success = _inspectionWebApiClient.UpdateInspection(id, inspection);
+
+            string message = success
+                ? "\nInspection assigned successfully\n"
+                : "\nError\n";
+
+            Console.WriteLine(message);
+
+            return success;
+        }
+
+        private Inspection GetInspection(int id)
+        {
+            return _inspectionWebApiClient.GetInspection(id).Result;
+        }
+
+        private DateTime? GetUpdateDate(DateTime createDate)
+        {
+            DateTime? updateDate = null;
+            do
+            {
+                updateDate = _cliHelper.GetDateFromUser("Type update date (yyyy/MM/dd:GHH:mm)");
+                if (updateDate < createDate)
+                {
+                    Console.WriteLine("update date have to be later or same as create date");
+                }
+            } while (updateDate < createDate);
+
+            return updateDate;
+        }
+
+        private List<string> CreateMachinesList()
+        {
+            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
+            List<string> machines = new List<string>();
+
+            foreach (var item in plant.Transformators)
+            {
+                Console.WriteLine($"{item.Name}");
+                machines.Add(item.Name);
+            }
+            foreach (var item in plant.Turbines)
+            {
+                Console.WriteLine($"{item.Name}");
+                machines.Add(item.Name);
+            }
+            foreach (var item in plant.Cauldrons)
+            {
+                Console.WriteLine($"{item.Name}");
+                machines.Add(item.Name);
+            }
+
+            return machines;
+        }
+
+        public void ShowAllInspections()
+        {
+            Console.Clear();
+            var inspections = _inspectionWebApiClient.GetAllInspections().Result;
 
             if (inspections != null)
             {
                 foreach (var inspection in inspections)
                 {
+                    Console.WriteLine($"\nInspection Id: {inspection.Id}");
                     Console.WriteLine($"Create date: {inspection.CreateDate}");
                     Console.WriteLine($"Update date: {inspection.UpdateDate}");
                     Console.WriteLine($"End date: {inspection.EndDate}");
-                    Console.WriteLine($"Machine name: {inspection.Name}");
+                    Console.WriteLine($"Machine name: {inspection.MachineName}");
                     Console.WriteLine($"Comments: {inspection.Comments}");
+                    Console.WriteLine($"State: {inspection.State}");
+                    Console.WriteLine($"Processing Engineer: {inspection.Engineer}\n");
                 }
+            }
+        }
+
+        public List<Inspection> GetAssignedInspections(MemberWebApi loggedUser)
+        {
+            Console.Clear();
+            var inspections = _inspectionWebApiClient.GetAllInspections().Result;
+            List<Inspection> result = new List<Inspection>();
+            if (loggedUser.Role == "Engineer")
+            {
+                result = inspections
+                    .Where(i => i.Engineer == loggedUser.Login)
+                    .ToList();
+                return result;
+            }
+            else
+            {
+                result = inspections
+                    .Where(i => i.Engineer != null)
+                    .ToList();
+                return result;
+            }
+        }
+
+        public void ShowAssignedInspections(MemberWebApi loggedUser)
+        {
+            Console.Clear();
+            var inspections = GetAssignedInspections(loggedUser);
+
+            foreach(var inspection in inspections)
+            {
+                Console.WriteLine($"\nInspection Id: {inspection.Id}");
+                Console.WriteLine($"Create date: {inspection.CreateDate}");
+                Console.WriteLine($"Update date: {inspection.UpdateDate}");
+                Console.WriteLine($"End date: {inspection.EndDate}");
+                Console.WriteLine($"Machine name: {inspection.MachineName}");
+                Console.WriteLine($"Comments: {inspection.Comments}");
+                Console.WriteLine($"State: {inspection.State}");
+                Console.WriteLine($"Processing Engineer: {inspection.Engineer}\n");
             }
         }
     }

@@ -21,7 +21,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
             if (loggedUser.Role != "Admin")
             {
-                Console.WriteLine("\nYou are not authorized to add new member. Go to Your CEO for a promotion :)\n");
+                Console.WriteLine("\nYou are not authorized to delete member. Go to Your CEO for a promotion :)\n");
                 return false;
             }
 

@@ -53,7 +53,7 @@
     <Compile Include="Interfaces\IInspectionRepository.cs" />
     <Compile Include="Interfaces\IRecievedDataRepository.cs" />
     <Compile Include="Models\Inspection.cs" />
-    <Compile Include="RecievedDataService.cs" />
+    <Compile Include="ReceivedDataService.cs" />
     <Compile Include="Models\AssetParameterData.cs" />
     <Compile Include="Models\CauldronData.cs" />
     <Compile Include="Models\Error.cs" />

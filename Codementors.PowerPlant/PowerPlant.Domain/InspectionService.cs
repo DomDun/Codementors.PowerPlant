@@ -1,12 +1,19 @@
 ﻿using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public class InspectionService
+    public interface IInspectionService
+    {
+        Task<bool> AddInspectionAsync(Inspection inspection);
+        List<Inspection> GetAllInspections();
+        Inspection GetInspection(int id);
+        bool UpdateInspection(int id, Inspection inspection);
+    }
+
+    public class InspectionService : IInspectionService
     {
         private readonly IInspectionRepository _inspectionRepository;
         public string _loggedUser;
@@ -16,14 +23,24 @@ namespace PowerPlantCzarnobyl.Domain
             _inspectionRepository = inspectionRepository;
         }
 
-        public bool AddInspection(Inspection inspection)
+        public async Task<bool> AddInspectionAsync(Inspection inspection)
         {
-            return _inspectionRepository.AddInspection(inspection);
+            return await _inspectionRepository.AddInspectionAsync(inspection);
         }
 
-        public async Task<List<Inspection>> GetInspectionsByDates(DateTime startData, DateTime endData)
+        public List<Inspection> GetAllInspections()
         {
-            return await _inspectionRepository.GetInspectionsAsync(startData, endData);
+            return _inspectionRepository.GetAllInspections();
+        }
+
+        public Inspection GetInspection(int id)
+        {
+            return _inspectionRepository.GetInspection(id);
+        }
+
+        public bool UpdateInspection(int id, Inspection inspection)
+        {
+            return _inspectionRepository.UpdateInspection(id, inspection);
         }
     }
 }

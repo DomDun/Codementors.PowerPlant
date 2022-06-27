@@ -1,7 +1,6 @@
 ﻿using PowerPlantCzarnobyl.WebApi.Client.Clients;
 using PowerPlantCzarnobyl.WebApi.Client.Models;
 using System;
-using System.Collections.Generic;
 using System.Timers;
 
 namespace PowerPlantCzarnobyl.WebApi.Client
@@ -9,16 +8,33 @@ namespace PowerPlantCzarnobyl.WebApi.Client
     internal class RecievedDataHandler
     {
         private readonly RecievedDataWebApiClient _recievedDataWebApiClient;
+        private readonly ErrorsHandler _errorsHandler;
 
         public RecievedDataHandler()
         {
             _recievedDataWebApiClient = new RecievedDataWebApiClient();
+            _errorsHandler = new ErrorsHandler();
+        }
+
+        public void StartWork()
+        {
+            var timer = new Timer(1000);
+            timer.Elapsed += SearchForErrorInDataFromPlant;
+            timer.Interval = 1000;
+            timer.Start();
+        }
+
+        public void SearchForErrorInDataFromPlant(object sender, ElapsedEventArgs cos)
+        {
+            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
+
+            _errorsHandler.CheckIfMachinesWorkCorrectly(sender, plant);
         }
 
         public void CurrentWorkStatus()
         {
             var timer = new Timer(1000);
-            timer.Elapsed += RecieveDataFromService;
+            timer.Elapsed += ShowDataFromPlant;
             timer.Interval = 1000;
             timer.Start();
 
@@ -33,7 +49,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             return;
         }
 
-        public void RecieveDataFromService(object sender, ElapsedEventArgs cos)
+        public void ShowDataFromPlant(object sender, ElapsedEventArgs cos)
         {
             PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
 
@@ -82,57 +98,6 @@ namespace PowerPlantCzarnobyl.WebApi.Client
             {
                 Console.WriteLine("\t" + name + "\t" + value.CurrentValue + " " + value.Unit);
             }
-        }
-
-        public void ShowProducedPower()
-        {
-            var timer = new Timer(1000);
-            timer.Elapsed += ProducedPower;
-            timer.Interval = 1000;
-            timer.Start();
-
-            ConsoleKeyInfo key;
-            do
-            {
-                key = Console.ReadKey();
-            } while (key.Key != ConsoleKey.Escape);
-
-            timer.Stop();
-            Console.Clear();
-            return;
-        }
-
-        List<double> collectedPower = new List<double>();
-        public void ProducedPower(object sender, ElapsedEventArgs cos)
-        {
-            PowerPlantDataSet plant = _recievedDataWebApiClient.GetData().Result;
-
-            Console.Clear();
-
-            double currentTurbinePower = 0;
-            double totalPower = 0;
-            foreach (var turbine in plant.Turbines)
-            {
-                Console.WriteLine(turbine.Name);
-                PrintValue("InputVoltage", turbine.CurrentPower);
-                currentTurbinePower = CalculateProducedPower("CurrentPower", turbine.CurrentPower);
-                collectedPower.Add(currentTurbinePower);
-            }
-
-            collectedPower
-                .ForEach(item =>
-                {
-                    totalPower += currentTurbinePower;
-                });
-            double time = 7200;
-
-            Console.WriteLine($"\n power generated  {totalPower * (collectedPower.Count / time)}  MWH");
-        }
-
-        private double CalculateProducedPower(string name, AssetParameter value)
-        {
-            var producedPower = value.CurrentValue;
-            return producedPower;
         }
     }
 }

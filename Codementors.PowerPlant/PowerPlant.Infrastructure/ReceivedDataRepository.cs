@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace PowerPlantCzarnobyl.Infrastructure
 {
-    public class RecievedDataRepository : IRecievedDataRepository
+    public class ReceivedDataRepository : IRecievedDataRepository
     {
         public event EventHandler<PowerPlantDataSetData> OnRecievedDataToDomain = null;
         public void Subscribe()

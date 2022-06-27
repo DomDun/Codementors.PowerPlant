@@ -2,11 +2,19 @@
 using PowerPlantCzarnobyl.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public class ErrorService
+    public interface IErrorsService
+    {
+        void AddError(Error error);
+        void CheckIfMachinesWorkCorrectly(object sender, PowerPlantDataSetData plant);
+        bool CheckValue(string machineName, string parameter, AssetParameterData value, PowerPlantDataSetData plant, string user);
+        List<Error> GetAllErrors(DateTime startData, DateTime endData);
+        Dictionary<string, int> GetAllErrorsInDictionary(DateTime startData, DateTime endData);
+    }
+    public class ErrorService : IErrorsService
     {
         private readonly IErrorsRepository _errorsRepository;
         private readonly IDateProvider _dateProvider;
@@ -18,7 +26,7 @@ namespace PowerPlantCzarnobyl.Domain
             _dateProvider = dateProvider;
         }
 
-        public void Add(Error error)
+        public void AddError(Error error)
         {
             _errorsRepository.AddError(error);
         }
@@ -69,7 +77,7 @@ namespace PowerPlantCzarnobyl.Domain
                     error.LoggedUser = "N/A";
                 }
 
-                Add(error);
+                AddError(error);
                 return false;
             }
             else
@@ -78,9 +86,16 @@ namespace PowerPlantCzarnobyl.Domain
             }
         }
 
-        public async Task<List<Error>> GetAllErrorsAsync(DateTime startData, DateTime endData)
+        public List<Error> GetAllErrors(DateTime startData, DateTime endData)
         {
-            return await _errorsRepository.GetAllErrorsAsync(startData, endData);
+            return  _errorsRepository.GetAllErrors(startData, endData);
+        }
+
+        public Dictionary<string, int> GetAllErrorsInDictionary(DateTime startData, DateTime endData)
+        {
+            return _errorsRepository.GetAllErrors(startData, endData)
+                .GroupBy(x=>x.MachineName)
+                .ToDictionary(x=>x.Key,x=>x.Count());
         }
     }
 }
