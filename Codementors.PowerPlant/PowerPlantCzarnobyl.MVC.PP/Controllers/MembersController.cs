@@ -1,22 +1,17 @@
 ﻿using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
-using PowerPlantCzarnobyl.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace PowerPlantCzarnobyl.MVC.Controllers
 {
+    [Authorize]
     public class MembersController : Controller
     {
-        private readonly MemberService _memberService;
+        private readonly IMemberService _memberService;
 
-        public MembersController()
+        public MembersController(IMemberService memberService)
         {
-            _memberService = new MemberService(new MembersRepository());
+            _memberService = memberService;
         }
         // GET: Members
         public ActionResult Index()
@@ -34,22 +29,21 @@ namespace PowerPlantCzarnobyl.MVC.Controllers
         }
 
         //// GET: Members/Create
-        [Authorize]
         public ActionResult Create()
         {
             return View();
         }
 
         //// POST: Members/Create
-        [Authorize]
         [HttpPost]
         public ActionResult Create(Member member)
         {
             try
             {
-                if (!ModelState.IsValid)
+
+                if (!ModelState.IsValid || member.Role != "Admin" && member.Role != "User" && member.Role != "Engineer")
                 {
-                    return View();
+                    return View("Error");
                 }
                 _memberService.Add(member);
 
@@ -57,34 +51,11 @@ namespace PowerPlantCzarnobyl.MVC.Controllers
             }
             catch
             {
-                return View();
+                return View("Error");
             }
         }
 
-        //// GET: Members/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: Members/Edit/5
-        //[HttpPost]
-        //public ActionResult Edit(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
         //// GET: Members/Delete/login
-        [Authorize]
         public ActionResult Delete(string login)
         {
             var member = _memberService.GetMember(login);
@@ -94,7 +65,6 @@ namespace PowerPlantCzarnobyl.MVC.Controllers
         }
 
         //// POST: Members/Delete/login
-        [Authorize]
         [HttpPost]
         public ActionResult Delete(string login, FormCollection collection)
         {

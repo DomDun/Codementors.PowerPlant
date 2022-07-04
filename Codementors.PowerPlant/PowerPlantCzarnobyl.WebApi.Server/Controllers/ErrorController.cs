@@ -10,7 +10,7 @@ namespace PowerPlantCzarnobyl.WebApi.Server.Controllers
     [RoutePrefix("api/v1/errors")]
     public class ErrorController : ApiController
     {
-        private readonly IErrorsService _errorService;
+        private readonly IErrorService _errorService;
 
         public ErrorController()
         {

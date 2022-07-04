@@ -51,7 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CliHelper.cs" />
-    <Compile Include="ErrorsHandler.cs" />
+    <Compile Include="DependencyInjection\CliModule.cs" />
+    <Compile Include="DependencyInjection\DependencyResolver.cs" />
+    <Compile Include="ErrorHandler.cs" />
     <Compile Include="LoginHandler.cs" />
     <Compile Include="PowerPlantActionsHandler.cs" />
     <Compile Include="Program.cs" />

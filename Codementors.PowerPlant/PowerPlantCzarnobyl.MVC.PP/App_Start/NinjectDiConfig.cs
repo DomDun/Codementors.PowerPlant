@@ -1,6 +1,8 @@
-﻿using Microsoft.Owin.Logging;
-using Ninject;
+﻿using Ninject;
 using Ninject.Modules;
+using PowerPlantCzarnobyl.Domain.DependencyInjection;
+using PowerPlantCzarnobyl.Infrastructure.DependencyInjection;
+using System;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -22,8 +24,7 @@ namespace PowerPlantCzarnobyl.MVC.PP.App_Start
                 return new INinjectModule[]
                 {
                     new DomainModule(),
-                    new InfrastructureModule(),
-                    new MvcModule()
+                    new InfrastructureModel()
                 };
             }
 
@@ -32,26 +33,6 @@ namespace PowerPlantCzarnobyl.MVC.PP.App_Start
                 return controllerType == null
                     ? null
                     : (IController)ninjectKernel.Get(controllerType);
-            }
-        }
-
-        private class MvcModule : NinjectModule
-        {
-            public object RollingInterval { get; private set; }
-
-            public override void Load()
-            {
-                Bind<ILogger>().ToConstant(SetUpLogger());
-            }
-
-            private ILogger SetUpLogger()
-            {
-                var logger = new LoggerConfiguration()
-                    .MinimumLevel.Verbose()
-                    .WriteTo.Console()
-                    .CreateLogger();
-
-                return logger;
             }
         }
     }

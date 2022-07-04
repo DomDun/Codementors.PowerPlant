@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="DateProvider.cs" />
+    <Compile Include="DependencyInjection\DomainModule.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="InspectionService.cs" />
     <Compile Include="Interfaces\IMembersRepository.cs" />

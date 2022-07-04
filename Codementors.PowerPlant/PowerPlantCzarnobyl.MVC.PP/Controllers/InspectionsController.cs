@@ -1,6 +1,5 @@
 ﻿using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
-using PowerPlantCzarnobyl.Infrastructure;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -9,11 +8,11 @@ namespace PowerPlantCzarnobyl.MVC.Controllers
     [Authorize]
     public class InspectionsController : Controller
     {
-        private readonly InspectionService _inspectionService;
+        private readonly IInspectionService _inspectionService;
 
-        public InspectionsController()
+        public InspectionsController(IInspectionService inspectionService)
         {
-            _inspectionService = new InspectionService(new InspectionRepository());
+            _inspectionService = inspectionService;
         }
         // GET: Inspections
         public ActionResult Index()

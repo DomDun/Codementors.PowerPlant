@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DependencyInjection\InfrastructureModel.cs" />
     <Compile Include="ErrorsRepository.cs" />
     <Compile Include="InspectionRepository.cs" />
     <Compile Include="ReceivedDataRepository.cs" />

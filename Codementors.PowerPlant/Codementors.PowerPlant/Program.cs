@@ -1,33 +1,36 @@
-﻿using PowerPlantCzarnobyl.Domain;
+﻿using Ninject;
+using PowerPlantCzarnobyl.DependencyInjection;
+using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Infrastructure;
 
 namespace PowerPlantCzarnobyl
 {
     internal class Program
     {
+        
+
+        private readonly ILoginHandler _loginHandler;
+        private readonly IPowerPlantActionsHandler _powerPlantActionsHandler;
+        private readonly IReceivedDataService _recievedDataService;
+        private readonly IErrorService _errorService;
+
         static void Main()
         {
-            new Program().Run();
+            var kernel = new DependencyResolver().GetKernel();
+            var program = kernel.Get<Program>();
+            program.Run();
         }
 
-        private readonly LoginHandler _loginHandler;
-        private static readonly PowerPlantActionsHandler _powerPlantActionsHandler = new PowerPlantActionsHandler();
-        private readonly ReceivedDataService _recievedDataService;
-        private readonly ErrorService _errorService;
-
-        public Program()
+        public Program(
+            ILoginHandler loginHandler,
+            IPowerPlantActionsHandler powerPlantActionsHandler,
+            IReceivedDataService receivedDataService,
+            IErrorService errorService)
         {
-            var errorRepostiory = new ErrorsRepository();
-            var recievedDataRepository = new ReceivedDataRepository();
-            var dateProvider = new DateProvider();
-            var consoleManager = new ConsoleManager();
-            var membersRepository = new MembersRepository();
-            var membersService = new MemberService(membersRepository);
-            var cliHelper = new CliHelper();
-
-            _loginHandler = new LoginHandler(membersService, consoleManager, cliHelper);
-            _errorService = new ErrorService(errorRepostiory, dateProvider);
-            _recievedDataService = new ReceivedDataService(recievedDataRepository);
+            _loginHandler = loginHandler;
+            _errorService = errorService;
+            _recievedDataService = receivedDataService;
+            _powerPlantActionsHandler = powerPlantActionsHandler;
         }
         string loggedMember = null;
         public void Run()

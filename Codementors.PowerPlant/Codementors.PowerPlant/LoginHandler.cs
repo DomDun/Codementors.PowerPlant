@@ -14,10 +14,10 @@ namespace PowerPlantCzarnobyl
     public class LoginHandler : ILoginHandler
     {
         private readonly ICliHelper _cliHelper;
-        private readonly IMembersService _iMembersService;
+        private readonly IMemberService _iMembersService;
         private readonly IConsoleManager _iConsoleManager;
 
-        public LoginHandler(IMembersService iMembersService, IConsoleManager iConsoleManager, ICliHelper iCliHelper)
+        public LoginHandler(IMemberService iMembersService, IConsoleManager iConsoleManager, ICliHelper iCliHelper)
         {
             _iMembersService = iMembersService;
             _iConsoleManager = iConsoleManager;

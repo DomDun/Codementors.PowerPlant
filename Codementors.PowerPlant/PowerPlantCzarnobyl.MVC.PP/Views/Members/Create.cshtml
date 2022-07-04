@@ -35,7 +35,7 @@
         @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.Role, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(model => model.Role, "You have to type Admin, User or Engineer", new { @class = "text-danger" })
         </div>
     </div>
 
