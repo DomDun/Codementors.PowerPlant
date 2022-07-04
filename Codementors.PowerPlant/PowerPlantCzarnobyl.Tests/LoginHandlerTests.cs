@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
+using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Tests
 {

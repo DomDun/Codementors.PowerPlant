@@ -1,5 +1,8 @@
 ﻿using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Domain
 {
@@ -9,6 +12,7 @@ namespace PowerPlantCzarnobyl.Domain
         bool CheckUserCredentials(string login, string password);
         Member CheckMemberRole(string login);
         bool Delete(string login);
+        List<Member> GetAllMembers();
     }
 
     public class MemberService : IMembersService
@@ -18,6 +22,11 @@ namespace PowerPlantCzarnobyl.Domain
         public MemberService(IMembersRepository membersRepository)
         {
             _membersRepository = membersRepository;
+        }
+
+        public List<Member> GetAllMembers()
+        {
+            return _membersRepository.GetAllMembers();
         }
 
         public bool Add(Member member)
@@ -42,6 +51,11 @@ namespace PowerPlantCzarnobyl.Domain
         {
             bool result = _membersRepository.DeleteMember(login);
             return result;
+        }
+
+        public object GetMember(string login)
+        {
+            return _membersRepository.GetMember(login);
         }
     }
 }

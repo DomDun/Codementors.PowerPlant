@@ -1,9 +1,11 @@
 ﻿using PowerPlantCzarnobyl.Domain.Interfaces;
 using PowerPlantCzarnobyl.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Infrastructure
 {
@@ -104,6 +106,39 @@ namespace PowerPlantCzarnobyl.Infrastructure
             }
 
             return success;
+        }
+
+        public List<Member> GetAllMembers()
+        {
+            List<Member> members = new List<Member>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    string commandText = @"SELECT * FROM [Members]";
+                    SqlCommand command = new SqlCommand(commandText, connection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        Member member = new Member();
+                        member.Login = dataReader["Login"].ToString();
+                        member.Role = dataReader["Role"].ToString();
+
+                        members.Add(member);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                members = null;
+            }
+
+            return members;
         }
     }
 }
