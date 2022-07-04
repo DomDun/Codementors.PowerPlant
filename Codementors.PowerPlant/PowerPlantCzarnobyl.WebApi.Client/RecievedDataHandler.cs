@@ -18,7 +18,7 @@ namespace PowerPlantCzarnobyl.WebApi.Client
 
         public void StartWork()
         {
-            var timer = new Timer(1000);
+            var timer = new Timer(1000); 
             timer.Elapsed += SearchForErrorInDataFromPlant;
             timer.Interval = 1000;
             timer.Start();

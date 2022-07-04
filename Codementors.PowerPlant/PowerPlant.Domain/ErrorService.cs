@@ -6,19 +6,20 @@ using System.Linq;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public interface IErrorsService
+    public interface IErrorService
     {
+        string _loggedUser { get; set; }
         void AddError(Error error);
         void CheckIfMachinesWorkCorrectly(object sender, PowerPlantDataSetData plant);
         bool CheckValue(string machineName, string parameter, AssetParameterData value, PowerPlantDataSetData plant, string user);
         List<Error> GetAllErrors(DateTime startData, DateTime endData);
         Dictionary<string, int> GetAllErrorsInDictionary(DateTime startData, DateTime endData);
     }
-    public class ErrorService : IErrorsService
+    public class ErrorService : IErrorService
     {
         private readonly IErrorsRepository _errorsRepository;
         private readonly IDateProvider _dateProvider;
-        public string _loggedUser;
+        public string _loggedUser { get; set; }
 
         public ErrorService(IErrorsRepository errorsRepository, IDateProvider dateProvider)
         {

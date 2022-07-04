@@ -2,13 +2,14 @@
 using NUnit.Framework;
 using PowerPlantCzarnobyl.Domain;
 using PowerPlantCzarnobyl.Domain.Models;
+using System.Threading.Tasks;
 
 namespace PowerPlantCzarnobyl.Tests
 {
     [TestFixture]
     public class LoginHandlerTests
     {
-        private Mock<IMembersService> _membersServiceMock;
+        private Mock<IMemberService> _membersServiceMock;
         private Mock<IConsoleManager> _consoleManagerMock;
         private Mock<ICliHelper> _cliHelperMock;
 
@@ -17,7 +18,7 @@ namespace PowerPlantCzarnobyl.Tests
         [SetUp]
         public void Setup()
         {
-            _membersServiceMock = new Mock<IMembersService>();
+            _membersServiceMock = new Mock<IMemberService>();
             _consoleManagerMock = new Mock<IConsoleManager>();
             _cliHelperMock = new Mock<ICliHelper>();
 

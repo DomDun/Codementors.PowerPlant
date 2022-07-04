@@ -6,13 +6,19 @@ using System.IO;
 
 namespace PowerPlantCzarnobyl
 {
-    internal class ErrorsHandler
+    internal interface IErrorHandler
     {
-        private readonly CliHelper _cliHelper;
-        private readonly ErrorService _errorService;
-        private readonly ConsoleManager _consoleManager;
+        void ExportErrorsListToJson();
+        void ShowAllErrors();
+    }
 
-        public ErrorsHandler()
+    internal class ErrorHandler : IErrorHandler
+    {
+        private readonly ICliHelper _cliHelper;
+        private readonly IErrorService _errorService;
+        private readonly IConsoleManager _consoleManager;
+
+        public ErrorHandler()
         {
             var dateProvider = new DateProvider();
             var errorsRepository = new ErrorsRepository();

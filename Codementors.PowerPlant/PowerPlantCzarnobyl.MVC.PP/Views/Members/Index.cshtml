@@ -1,0 +1,33 @@
+﻿@model IEnumerable<PowerPlantCzarnobyl.Domain.Models.Member>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>Login</th>
+        <th>Role</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Login
+            </td>
+            <td>
+                @item.Role
+            </td>
+            <td>
+                    @Html.ActionLink("Details", "Details", new {  Login=item.Login  })
+            </td>
+        </tr>
+    }
+
+</table>

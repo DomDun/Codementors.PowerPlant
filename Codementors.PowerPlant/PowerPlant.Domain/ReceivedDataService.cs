@@ -4,14 +4,15 @@ using System;
 
 namespace PowerPlantCzarnobyl.Domain
 {
-    public interface IRecievedDataService
+    public interface IReceivedDataService
     {
+        event EventHandler<PowerPlantDataSetData> OnRecieveData;
         void ActualDataSender();
         PowerPlantDataSetData GetNewDataSet();
         void RecievedDataSender(object sender, PowerPlantDataSetData plant);
     }
 
-    public class ReceivedDataService : IRecievedDataService
+    public class ReceivedDataService : IReceivedDataService
     {
         public static ReceivedDataService Instance { get; set; }
 

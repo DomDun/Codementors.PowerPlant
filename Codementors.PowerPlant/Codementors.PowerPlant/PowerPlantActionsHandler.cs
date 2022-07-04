@@ -6,27 +6,44 @@ using System.Collections.Generic;
 
 namespace PowerPlantCzarnobyl
 {
-    internal class PowerPlantActionsHandler
+    internal interface IPowerPlantActionsHandler
     {
-        private readonly CliHelper _cliHelper;
-        private readonly LoginHandler _loginHandler;
-        private readonly ReceivedDataService _recievedDataService;
-        private readonly MemberService _memberService;
-        private readonly ConsoleManager _consoleManager;
-        private readonly ErrorsHandler _errorsHandler;
+        void ProgramLoop(string loggedMember);
+    }
 
-        public PowerPlantActionsHandler()
+    internal class PowerPlantActionsHandler : IPowerPlantActionsHandler
+    {
+        private readonly ICliHelper _cliHelper;
+        private readonly ILoginHandler _loginHandler;
+        private readonly IReceivedDataService _recievedDataService;
+        private readonly IMemberService _memberService;
+        private readonly IConsoleManager _consoleManager;
+        private readonly IErrorHandler _errorsHandler;
+
+        public PowerPlantActionsHandler(
+            ICliHelper cliHelper,
+            ILoginHandler loginHandler,
+            IReceivedDataService recievedDataService,
+            IMemberService memberService,
+            IConsoleManager consoleManager,
+            IErrorHandler errorsHandler)
         {
-            _cliHelper = new CliHelper();
 
-            var recievedDataRepository = new ReceivedDataRepository();
-            var membersRepository = new MembersRepository();
+            _cliHelper = cliHelper;
+            _loginHandler = loginHandler;
+            _recievedDataService = recievedDataService;
+            _memberService = memberService;
+            _consoleManager = consoleManager;
+            _errorsHandler = errorsHandler;
 
-            _errorsHandler = new ErrorsHandler();
-            _consoleManager = new ConsoleManager();
-            _recievedDataService = new ReceivedDataService(recievedDataRepository);
-            _memberService = new MemberService(membersRepository);
-            _loginHandler = new LoginHandler(_memberService, _consoleManager, _cliHelper);
+            //var recievedDataRepository = new ReceivedDataRepository();
+            //var membersRepository = new MembersRepository();
+
+            //_errorsHandler = new ErrorHandler();
+            //_consoleManager = new ConsoleManager();
+            //_recievedDataService = new ReceivedDataService(recievedDataRepository);
+            //_memberService = new MemberService(membersRepository);
+            //_loginHandler = new LoginHandler(_memberService, _consoleManager, _cliHelper);
         }
         public void ProgramLoop(string loggedMember)
         {
@@ -36,7 +53,7 @@ namespace PowerPlantCzarnobyl
             while (!exit)
             {
                 string operation = _cliHelper.GetStringFromUser("Enter number of operation: \n 1.Current work status \n 2.Add user \n 3.Delete User \n 4.Produced energy \n 5.Export file with errors \n 6.Show all errors \n 7.Exit \n");
-                
+
                 switch (operation)
                 {
                     case "1":

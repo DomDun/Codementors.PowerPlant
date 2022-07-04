@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PowerPlantCzarnobyl.Domain.Models.Inspection>
+
+
+    @{
+        ViewBag.Title = "Inspection List";
+    }
+
+    <h2>@ViewBag.Title</h2>
+
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>Machine Name</th>
+            <th>Create Date</th>
+            <th>Update Date</th>
+            <th>End Date</th>
+            <th>Comments</th>
+            <th>State</th>
+            <th>Engineer</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            var updateDate = item.UpdateDate?.ToString() ?? "N/A";
+            var endDate = item.EndDate?.ToString() ?? "N/A";
+            var comments = item.Comments?.ToString() ?? "N/A";
+            var engineer = item.Engineer?.ToString() ?? "N/A";
+            <tr>
+                <td>
+                    @item.MachineName
+                </td>
+                <td>
+                    @item.CreateDate
+                </td>
+                <td>
+                    @updateDate
+                </td>
+                <td>
+                    @endDate
+                </td>
+                <td>
+                    @comments
+                </td>
+                <td>
+                    @item.State
+                </td>
+                <td>
+                    @engineer
+                </td>
+            </tr>
+        }
+
+    </table>

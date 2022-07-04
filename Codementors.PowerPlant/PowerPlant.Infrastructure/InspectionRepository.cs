@@ -24,7 +24,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
                     string commandSql = "INSERT INTO [Inspections] ([CreateDate], [Name], [State], [Engineer]) " +
                         "VALUES (@CreateDate, @Name, @State, @Engineer)";
                     SqlCommand command = new SqlCommand(commandSql, connection);
-                    command.Parameters.Add("@CreateDate", SqlDbType.DateTime2).Value = inspection.CreateDate;
+                    command.Parameters.Add("@CreateDate", SqlDbType.DateTime2).Value = DateTime.Now;
                     command.Parameters.Add("@UpdateDate", SqlDbType.DateTime2).Value = inspection.UpdateDate == null
                         ?(object)DBNull.Value
                         : inspection.UpdateDate;
@@ -36,7 +36,7 @@ namespace PowerPlantCzarnobyl.Infrastructure
                         ? (object)DBNull.Value
                         : inspection.Comments;
                     command.Parameters.Add("@State", SqlDbType.NVarChar, 255).Value = inspection.State;
-                    command.Parameters.Add("@Comments", SqlDbType.NVarChar, 255).Value = inspection.Engineer == null
+                    command.Parameters.Add("@Engineer", SqlDbType.NVarChar, 255).Value = inspection.Engineer == null
                         ? (object)DBNull.Value
                         : inspection.Engineer;
 
